@@ -1,0 +1,7 @@
+{ 
+	"namespace": "protocols.sensor", 
+	"protocol" : "Sensor",
+	"messages" : {
+		
+	}
+}

@@ -1,0 +1,14 @@
+{ 
+	"namespace": "protocols.light", 
+	"protocol" : "Light",
+	"messages" : {
+		"powerOn" : {
+			"request" : [],
+			"response" : "boolean"
+		},
+		"powerOff" : {
+			"request" : [],
+			"response" : "boolean"
+		}
+	}
+}

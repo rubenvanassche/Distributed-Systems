@@ -1,0 +1,7 @@
+{ 
+	"namespace": "protocols.fridge", 
+	"protocol" : "Fridge",
+	"messages" : {
+	
+	}
+}

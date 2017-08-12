@@ -1,0 +1,7 @@
+{ 
+	"namespace": "protocols.user", 
+	"protocol" : "User",
+	"messages" : {
+		
+	}
+}

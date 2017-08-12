@@ -1,0 +1,7 @@
+{ 
+	"namespace": "protocols.controller", 
+	"protocol" : "Controller",
+	"messages" : {
+		
+	}
+}
