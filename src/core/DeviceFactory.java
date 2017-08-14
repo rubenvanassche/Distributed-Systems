@@ -3,14 +3,14 @@ package core;
 import structures.*;
 import structures.Entity.Type;
 
-public class Factory {
+public class DeviceFactory {
 	public int id;
 	public String controllerIP; // Information about controller
 	public int controllerPort;  // Information about controller
 	public String ipAddress;  // Information about device self
 	public int port;  // Information about device self
 	
-	public Factory(int fid, String fcontrollerIP, int fcontrollerPort, String fipAdress, int fport){
+	public DeviceFactory(int fid, String fcontrollerIP, int fcontrollerPort, String fipAdress, int fport){
 		id = fid;
 		controllerIP = fcontrollerIP;
 		controllerPort = fcontrollerPort;

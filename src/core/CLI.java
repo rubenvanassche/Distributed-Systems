@@ -66,7 +66,7 @@ public class CLI {
             return;
         }
         
-        Factory factory = createFactory(cmd.getOptionValue("id"), 
+        DeviceFactory factory = createFactory(cmd.getOptionValue("id"), 
         		cmd.getOptionValue("cip"), 
         		cmd.getOptionValue("cport"), 
         		cmd.getOptionValue("ip"), 
@@ -127,14 +127,14 @@ public class CLI {
         
 	}
 	
-	public static Factory createFactory(String fid, String fcontrollerIP, String fcontrollerPort, String fipAdress, String fport){
+	public static DeviceFactory createFactory(String fid, String fcontrollerIP, String fcontrollerPort, String fipAdress, String fport){
 		int id = Integer.parseInt(fid);
 		String controllerIP = fcontrollerIP;
 		int controllerPort = Integer.parseInt(fcontrollerPort);
 		String ipAdress = fipAdress;
 		int port = Integer.parseInt(fport);
 		
-		Factory factory = new Factory(id, controllerIP, controllerPort, ipAdress, port);
+		DeviceFactory factory = new DeviceFactory(id, controllerIP, controllerPort, ipAdress, port);
 		
 		return factory;
 	}

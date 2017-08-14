@@ -8,14 +8,16 @@ package protocols.light;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Light {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Light\",\"namespace\":\"protocols.light\",\"types\":[],\"messages\":{\"powerOn\":{\"request\":[],\"response\":\"boolean\"},\"powerOff\":{\"request\":[],\"response\":\"boolean\"}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Light\",\"namespace\":\"protocols.light\",\"types\":[],\"messages\":{\"powerOn\":{\"request\":[],\"response\":\"boolean\"},\"powerOff\":{\"request\":[],\"response\":\"boolean\"},\"getStatus\":{\"request\":[],\"response\":\"boolean\"}}}");
   boolean powerOn() throws org.apache.avro.AvroRemoteException;
   boolean powerOff() throws org.apache.avro.AvroRemoteException;
+  boolean getStatus() throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends Light {
     public static final org.apache.avro.Protocol PROTOCOL = protocols.light.Light.PROTOCOL;
     void powerOn(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
     void powerOff(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
+    void getStatus(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
   }
 }

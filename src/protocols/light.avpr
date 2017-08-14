@@ -9,6 +9,10 @@
 		"powerOff" : {
 			"request" : [],
 			"response" : "boolean"
+		},
+		"getStatus" : {
+			"request" : [],
+			"response" : "boolean"
 		}
 	}
 }

@@ -1,7 +1,20 @@
-{ 
-	"namespace": "protocols.controller", 
+{
+	"namespace": "protocols.controller",
 	"protocol" : "Controller",
+	"types": [
+		{"name": "Device", "type": "record", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "ipadress", "type": "string"},
+			{"name": "port", "type": "int"},
+			{"name": "type", "type": "string"}
+		]},
+		{"name": "Failure", "type": "error", "fields": [{"name": "message", "type": "string"}]}
+	],
 	"messages" : {
-		
+		"register" : {
+			"request" : [{"name" : "device", "type": "Device"}],
+			"response" : "boolean",
+			"errors": ["Failure"]
+		}
 	}
 }

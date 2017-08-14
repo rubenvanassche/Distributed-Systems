@@ -8,10 +8,12 @@ package protocols.controller;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Controller {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Controller\",\"namespace\":\"protocols.controller\",\"types\":[],\"messages\":{}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Controller\",\"namespace\":\"protocols.controller\",\"types\":[{\"type\":\"record\",\"name\":\"Device\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"},{\"name\":\"type\",\"type\":\"string\"}]},{\"type\":\"error\",\"name\":\"Failure\",\"fields\":[{\"name\":\"message\",\"type\":\"string\"}]}],\"messages\":{\"register\":{\"request\":[{\"name\":\"device\",\"type\":\"Device\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]}}}");
+  boolean register(protocols.controller.Device device) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
 
   @SuppressWarnings("all")
   public interface Callback extends Controller {
     public static final org.apache.avro.Protocol PROTOCOL = protocols.controller.Controller.PROTOCOL;
+    void register(protocols.controller.Device device, org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
   }
 }
