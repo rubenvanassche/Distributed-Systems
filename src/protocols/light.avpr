@@ -13,6 +13,10 @@
 		"getStatus" : {
 			"request" : [],
 			"response" : "boolean"
+		},
+		"ping" : {
+			"request" : [],
+			"response" : "boolean"
 		}
 	}
 }

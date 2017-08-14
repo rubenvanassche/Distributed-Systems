@@ -2,6 +2,17 @@
 	"namespace": "protocols.sensor", 
 	"protocol" : "Sensor",
 	"messages" : {
-		
+		"getTemperature" : {
+			"request" : [],
+			"response" : "double"
+		},
+		"getClock" : {
+			"request" : [],
+			"response" : "double"
+		},
+		"ping" : {
+			"request" : [],
+			"response" : "boolean"
+		}
 	}
 }

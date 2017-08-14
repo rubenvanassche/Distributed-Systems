@@ -8,10 +8,12 @@ package protocols.user;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface User {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"User\",\"namespace\":\"protocols.user\",\"types\":[],\"messages\":{}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"User\",\"namespace\":\"protocols.user\",\"types\":[],\"messages\":{\"inHouse\":{\"request\":[],\"response\":\"boolean\"}}}");
+  boolean inHouse() throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends User {
     public static final org.apache.avro.Protocol PROTOCOL = protocols.user.User.PROTOCOL;
+    void inHouse(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
   }
 }

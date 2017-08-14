@@ -2,6 +2,9 @@
 	"namespace": "protocols.fridge", 
 	"protocol" : "Fridge",
 	"messages" : {
-	
+		"ping" : {
+			"request" : [],
+			"response" : "boolean"
+		}
 	}
 }

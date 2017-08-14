@@ -4,6 +4,7 @@ import org.apache.commons.cli.*;
 
 import avro.hello.proto.Hello;
 import avro.hello.server.HelloServer;
+import managers.Manager;
 import structures.*;
 
 import java.io.IOException;
@@ -42,14 +43,17 @@ public class CLI {
         type.setRequired(true);
         options.addOption(type);
         
-        Option amountofmeasurements = new Option("a", "amountofmeasurements", false, "[Controller-Only] amount of measurements of the temperature sensor the controller keeps");
+        Option amountofmeasurements = new Option("a", "amountofmeasurements", true, "[Controller-Only] amount of measurements of the temperature sensor the controller keeps");
         options.addOption(amountofmeasurements);
         
-        Option startingtemperature = new Option("s", "startingtemperature", false, "[Sensor-Only] initial temperature of the temperature sensor");
+        Option startingtemperature = new Option("s", "startingtemperature", true, "[Sensor-Only] initial temperature of the temperature sensor");
         options.addOption(startingtemperature);
         
-        Option updatefrequency = new Option("f", "updatefrequency", false, "[Sensor-Only] frequency when temperature senor sends a temperature to the controller");
+        Option updatefrequency = new Option("f", "updatefrequency", true, "[Sensor-Only] frequency when temperature senor sends a temperature to the controller");
         options.addOption(updatefrequency);
+        
+        Option driftvalue = new Option("d", "driftvalue", true, "[Sensor-Only] the value by which the clock drifts every second");
+        options.addOption(driftvalue);
         
 
         CommandLineParser parser = new DefaultParser();
@@ -66,65 +70,83 @@ public class CLI {
             return;
         }
         
-        DeviceFactory factory = createFactory(cmd.getOptionValue("id"), 
+        createManagers(cmd);
+        
+	}
+	
+	public static void createManagers(CommandLine cmd){
+        DeviceFactory deviceFactory = createFactory(cmd.getOptionValue("id"), 
         		cmd.getOptionValue("cip"), 
         		cmd.getOptionValue("cport"), 
         		cmd.getOptionValue("ip"), 
         		cmd.getOptionValue("port"));
         
+        ManagerFactory factory = new ManagerFactory(deviceFactory);
         
-        String typeValue = cmd.getOptionValue("type");
-        Server server = null;
-        Device device = null;
         
-        if(typeValue.contentEquals("controller")){
-        	int a = Integer.parseInt(cmd.getOptionValue("a"));
+        String type = cmd.getOptionValue("type");
+        type = type.toUpperCase(); // So it matches the type enum in structures.entity
+        Manager manager = null;
+        
+        if(type.contentEquals("CONTROLLER")){
+        	int amountOfMeasurements = 0;
         	
-        	Controller controller = factory.createController(a);
-        	device = controller;
-        	server = createServer(controller, protocols.controller.Controller.class);
-        }else if(typeValue.contentEquals("fridge")){
-        	Fridge fridge = factory.createFridge();
+        	try{
+        		amountOfMeasurements = Integer.parseInt(cmd.getOptionValue("a"));
+        	}catch (Exception e) {
+        		System.out.println("[ERROR] when building an controller, an amount of measurements is required!");
+            	System.exit(1);
+                return;
+			}
         	
-        	device = fridge;
-        	server = createServer(fridge, protocols.fridge.Fridge.class);
-        }else if(typeValue.contentEquals("light")){
-        	Light light = factory.createLight();
         	
-        	device = light;
-        	server = createServer(light, protocols.light.Light.class);
-        }else if(typeValue.contentEquals("sensor")){
-        	Double s = Double.parseDouble(cmd.getOptionValue("s"));
-        	int f = Integer.parseInt(cmd.getOptionValue("f"));
+        	manager = factory.createControllerManager(amountOfMeasurements);
+        }else if(type.contentEquals("FRIDGE")){
+        	manager = factory.createFridgeManager();
+        }else if(type.contentEquals("LIGHT")){
+        	manager = factory.createLightManager();
+        }else if(type.contentEquals("SENSOR")){
+        	Double startingTemperature = 0.0;
+        	int updateFrequency = 0;
+        	Double driftValue = 0.0;
         	
-        	if(f == 0){
+        	try{
+        		startingTemperature = Double.parseDouble(cmd.getOptionValue("s"));
+        		updateFrequency = Integer.parseInt(cmd.getOptionValue("f"));
+        		driftValue = Double.parseDouble(cmd.getOptionValue("d"));
+        	}catch (Exception e) {
+        		System.out.println("[ERROR] when building an controller, an starting temperature,update frequency and drift value is required!");
+            	System.exit(1);
+                return;
+			}
+        	
+        	if(updateFrequency <= 0){
             	System.out.println("[ERROR] update frequency must be greater than zero!");
             	System.exit(1);
                 return;
         	}
         	
-        	Sensor sensor = factory.createSensor(s, f);
+        	if(driftValue <= 0){
+            	System.out.println("[ERROR] drift value must be greater than zero!");
+            	System.exit(1);
+                return;
+        	}
         	
-        	device = sensor;
-        	server = createServer(sensor, protocols.sensor.Sensor.class);
-        }else if(typeValue.contentEquals("user")){
-        	User user = factory.createUser();
-        	
-        	device = user;
-        	server = createServer(user, protocols.user.User.class);
+        	manager = factory.createSensorManager(startingTemperature, updateFrequency, driftValue);
+        }else if(type.contentEquals("USER")){
+        	manager = factory.createUserManager();
         }else{
         	System.out.println("[ERROR] not a valid type given!");
         	System.exit(1);
             return;
         }
         
-        // Start the server
-		server.start();
-		
-		try{
-			server.join();
-		}catch(InterruptedException e){}
+        Thread t = new Thread(new GUI(manager));
+        t.start();
         
+        // Start the server
+        manager.run();
+        System.out.println("test");
 	}
 	
 	public static DeviceFactory createFactory(String fid, String fcontrollerIP, String fcontrollerPort, String fipAdress, String fport){
@@ -139,16 +161,4 @@ public class CLI {
 		return factory;
 	}
 	
-	public static Server createServer(Device device, Class proto){
-		Server server = null;
-		try{
-			server = new SaslSocketServer(new SpecificResponder(proto, device), new InetSocketAddress(6789));
-		}catch(IOException e){
-			System.err.println("[Error] Failed to start server");
-			e.printStackTrace(System.err);
-			System.exit(1);
-		}
-		
-		return server;
-	}
 }

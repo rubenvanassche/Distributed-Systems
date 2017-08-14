@@ -2,10 +2,16 @@ package servers;
 
 import org.apache.avro.AvroRemoteException;
 
+import structures.Device;
 import structures.Light;
 
 public class LightServer extends Server implements protocols.light.Light {
-	Light light = (Light) device;
+	public Light light;
+	
+	public LightServer(Device d) {
+		super(d);
+		this.light = (Light) d;
+	}
 	
 	@Override
 	public boolean powerOn() throws AvroRemoteException {
@@ -24,4 +30,8 @@ public class LightServer extends Server implements protocols.light.Light {
 		return light.activated;
 	}
 
+	@Override
+	public boolean ping() throws AvroRemoteException {
+		return true;
+	}
 }

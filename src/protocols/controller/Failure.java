@@ -5,9 +5,10 @@
  */
 package protocols.controller;  
 @SuppressWarnings("all")
+/** Failure */
 @org.apache.avro.specific.AvroGenerated
 public class Failure extends org.apache.avro.specific.SpecificExceptionBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"error\",\"name\":\"Failure\",\"namespace\":\"protocols.controller\",\"fields\":[{\"name\":\"message\",\"type\":\"string\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"error\",\"name\":\"Failure\",\"namespace\":\"protocols.controller\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"message\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence message$;
 

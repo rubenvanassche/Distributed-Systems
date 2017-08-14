@@ -16,18 +16,18 @@ import protocols.controller.Failure;
 import structures.Device;
 
 public class ControlledManager extends Manager {
-	Controller controller;
-	Device device;
+	Controller controller;  // RPC connection to controller
+	public Device structure;  // Structure
 	
 	
-	public ControlledManager(Device fdevice, Server server) {
+	public ControlledManager(Device fstructure, Server server) {
 		super(server);
-		this.device = fdevice;
+		this.structure = fstructure;
 		
 		// Create the proxy
 		try{
-			InetAddress ipAddress = InetAddress.getByName(device.controllerIpAdress);
-			InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, device.controllerPort);
+			InetAddress ipAddress = InetAddress.getByName(structure.controllerIpAdress);
+			InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, structure.controllerPort);
 			Transceiver client = new SaslSocketTransceiver(socketAddress);
 			controller = (Controller) SpecificRequestor.getClient(Controller.class, client);
 		}catch(IOException e){
@@ -38,7 +38,7 @@ public class ControlledManager extends Manager {
 		
 		// Try to register this device to the controller
 		try{
-			this.controller.register(device.getProtocolDevice());
+			this.controller.register(structure.getProtocolDevice());
 		}catch (Failure e){
 			System.err.println("[Error] " + e.getMessage());
 		}catch (Exception e) {
@@ -47,6 +47,7 @@ public class ControlledManager extends Manager {
 			e.printStackTrace(System.err);
 			System.exit(1);
 		}
+		
 		
 	}
 	

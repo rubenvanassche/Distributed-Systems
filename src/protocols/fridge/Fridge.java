@@ -8,10 +8,12 @@ package protocols.fridge;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Fridge {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[],\"messages\":{}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[],\"messages\":{\"ping\":{\"request\":[],\"response\":\"boolean\"}}}");
+  boolean ping() throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends Fridge {
     public static final org.apache.avro.Protocol PROTOCOL = protocols.fridge.Fridge.PROTOCOL;
+    void ping(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
   }
 }

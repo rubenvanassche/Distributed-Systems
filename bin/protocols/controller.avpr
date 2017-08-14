@@ -2,17 +2,84 @@
 	"namespace": "protocols.controller",
 	"protocol" : "Controller",
 	"types": [
-		{"name": "Device", "type": "record", "fields": [
+		{"name": "Device", "type": "record", "doc" : "Device info for the network", "fields": [
 			{"name": "id", "type": "int"},
 			{"name": "ipadress", "type": "string"},
 			{"name": "port", "type": "int"},
 			{"name": "type", "type": "string"}
 		]},
-		{"name": "Failure", "type": "error", "fields": [{"name": "message", "type": "string"}]}
+		{"name": "Failure", "type": "error", "doc" : "Failure", "fields": [
+			{"name": "message", "type": "string"}
+		]},
+		{"name": "LightStatus", "type": "record", "doc" : "Information about a light and if it's on/off", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "state", "type": "boolean"}
+		]},
+		{"name": "DeviceStatus", "type": "record", "doc" : "Information about a device and if it's online or not", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "online", "type": "boolean"},
+			{"name": "type", "type": "string"}
+		]}
 	],
 	"messages" : {
 		"register" : {
 			"request" : [{"name" : "device", "type": "Device"}],
+			"response" : "boolean",
+			"errors": ["Failure"]
+		},
+		"updateTemperature" : {
+			"request" : [
+				{"name" : "id", "type": "int"},
+				{"name" : "value", "type": "double"}
+			],
+			"response" : "boolean",
+			"errors": ["Failure"]
+		},
+		"userLeave" : {
+			"request" : [
+				{"name" : "id", "type": "int"}
+			],
+			"response" : "boolean",
+			"errors": ["Failure"]
+		},
+		"userEnters" : {
+			"request" : [
+				{"name" : "id", "type": "int"}
+			],
+			"response" : "boolean",
+			"errors": ["Failure"]
+		},
+		"getTemperature" : {
+			"request" : [],
+			"response" : "double",
+			"errors": ["Failure"]
+		},
+		"getTemperatureHistory" : {
+			"request" : [],
+			"response" : {"type": "array", "items": "double"},
+			"errors": ["Failure"]
+		},
+		"getDevices" : {
+			"request" : [],
+			"response" : {"type": "array", "items": "DeviceStatus"},
+			"errors": ["Failure"]
+		},
+		"getLights" : {
+			"request" : [],
+			"response" : {"type": "array", "items": "LightStatus"},
+			"errors": ["Failure"]
+		},
+		"turnLightOn" : {
+			"request" : [
+				{"name" : "id", "type": "int"}
+			],
+			"response" : "boolean",
+			"errors": ["Failure"]
+		},
+		"turnLightOff" : {
+			"request" : [
+				{"name" : "id", "type": "int"}
+			],
 			"response" : "boolean",
 			"errors": ["Failure"]
 		}

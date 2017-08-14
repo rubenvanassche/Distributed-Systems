@@ -8,10 +8,16 @@ package protocols.sensor;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Sensor {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Sensor\",\"namespace\":\"protocols.sensor\",\"types\":[],\"messages\":{}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Sensor\",\"namespace\":\"protocols.sensor\",\"types\":[],\"messages\":{\"getTemperature\":{\"request\":[],\"response\":\"double\"},\"getClock\":{\"request\":[],\"response\":\"double\"},\"ping\":{\"request\":[],\"response\":\"boolean\"}}}");
+  double getTemperature() throws org.apache.avro.AvroRemoteException;
+  double getClock() throws org.apache.avro.AvroRemoteException;
+  boolean ping() throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends Sensor {
     public static final org.apache.avro.Protocol PROTOCOL = protocols.sensor.Sensor.PROTOCOL;
+    void getTemperature(org.apache.avro.ipc.Callback<java.lang.Double> callback) throws java.io.IOException;
+    void getClock(org.apache.avro.ipc.Callback<java.lang.Double> callback) throws java.io.IOException;
+    void ping(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
   }
 }

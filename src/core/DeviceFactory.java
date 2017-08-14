@@ -27,6 +27,7 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.CONTROLLER;
+		d.online = true;
 		
 		return d;
 	}
@@ -40,6 +41,7 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.FRIDGE;
+		d.online = true;
 		
 		return d;		
 	}
@@ -53,12 +55,13 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.LIGHT;
+		d.online = true;
 		
 		return d;
 	}
 	
-	public Sensor createSensor(Double startingTemperature, int updateFrequency){
-		Sensor d = new Sensor(startingTemperature, updateFrequency);
+	public Sensor createSensor(Double startingTemperature, int updateFrequency, Double driftValue){
+		Sensor d = new Sensor(startingTemperature, updateFrequency, driftValue);
 		
 		d.id = id;
 		d.controllerIpAdress = controllerIP;
@@ -66,6 +69,7 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.SENSOR;
+		d.online = true;
 		
 		return d;
 	}
@@ -79,6 +83,7 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.USER;
+		d.online = true;
 		
 		return d;
 	}

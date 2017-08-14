@@ -2,6 +2,9 @@
 	"namespace": "protocols.user", 
 	"protocol" : "User",
 	"messages" : {
-		
+		"inHouse" : {
+			"request" : [],
+			"response" : "boolean"
+		}
 	}
 }

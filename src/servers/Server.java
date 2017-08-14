@@ -3,5 +3,9 @@ package servers;
 import structures.*;
 
 public class Server {
-	Device device;
+	public Device device;
+	
+	public Server(Device d){
+		this.device = d;
+	}
 }
