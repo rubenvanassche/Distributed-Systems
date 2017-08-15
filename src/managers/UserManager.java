@@ -10,6 +10,7 @@ import asg.cliche.Command;
 import asg.cliche.Param;
 import protocols.controller.Controller;
 import protocols.controller.DeviceStatus;
+import protocols.controller.Failure;
 import protocols.controller.LightStatus;
 import protocols.light.Light;
 import structures.Device;
@@ -119,11 +120,26 @@ public class UserManager extends ControlledManager {
 	
 	public void setLight(int id, Boolean active){
 		try {
+			Boolean success = null;
 			if(active == true){
-				this.controller.turnLightOn(id);
+				success = this.controller.turnLightOn(id);
+				
+				if(success){
+					System.out.println("Light " + id + " On");
+				}
 			}else{
-				this.controller.turnLightOff(id);
+				success = this.controller.turnLightOff(id);
+				
+				if(success){
+					System.out.println("Light " + id + " Off");
+				}
 			}
+			
+			if(success == false){
+				System.out.println("Light " + id + " offline");
+			}
+		} catch (Failure e ){
+			System.out.println(e.getMessage());
 		} catch (AvroRemoteException e) {
 			// TODO controlelr down, take over
 			e.printStackTrace();

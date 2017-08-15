@@ -20,6 +20,7 @@ import asg.cliche.Param;
 import protocols.controller.Controller;
 import protocols.controller.Device;
 import protocols.controller.DeviceStatus;
+import protocols.controller.Failure;
 import protocols.controller.LightStatus;
 import protocols.fridge.Fridge;
 import protocols.light.Light;
@@ -107,26 +108,13 @@ public class ControllerManager extends Manager {
     		@Param(name="id", description="The identifier of the light")
     		Integer id
     		) {
-		Light light = this.lightProxies.get(id);
-		
-		if(light == null){
-			System.out.println("Light ID: " + id  + " does not exists");
-			return;
-		}
-		
 		try {
-			light.powerOn();
-			System.out.println("Light ID: " + id  + " on");
-		} catch (AvroRemoteException e) {
-			System.out.println("Light ID: " + id  + " is offline");
-			
-			// Set device offline
-			try {
-				this.structure.setDeviceOffline(id, Type.LIGHT);
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
+			this.setLightStatus(id, true);
+		} catch (Failure e) {
+			System.out.println(e.getMessage());
 		}
+		
+		System.out.println("Light ID: " + id  + " on");
     }
 	
 	@Command(description="Turn a light off")
@@ -134,27 +122,34 @@ public class ControllerManager extends Manager {
     		@Param(name="id", description="The identifier of the light")
     		Integer id
     		) {
+		
+		try {
+			this.setLightStatus(id, false);
+		} catch (Failure e) {
+			System.out.println(e.getMessage());
+		}
+		
+		System.out.println("Light ID: " + id  + " off");
+    }
+	
+	// Set a speicified light by id on or off
+	public void setLightStatus(int id, Boolean status) throws Failure{
 		Light light = this.lightProxies.get(id);
 		
 		if(light == null){
-			System.out.println("Light ID: " + id  + " does not exists");
-			return;
+			throw new Failure("Light ID: " + id  + " does not exists");
 		}
 		
 		try {
-			light.powerOff();
-			System.out.println("Light ID: " + id  + " off");
-		} catch (AvroRemoteException e) {
-			System.out.println("Light ID: " + id  + " is offline");
-			
-			// Set device offline
-			try {
-				this.structure.setDeviceOffline(id, Type.LIGHT);
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
+			if(status == true){
+				light.powerOn();
+			}else{
+				light.powerOff();
 			}
+		}catch (AvroRemoteException e) {
+			throw new Failure("Light ID: " + id  + " is offline");
 		}
-    }
+	}
 
 	@Command(description="Get information about the temperature sensors")
     public void sensors() {
@@ -393,6 +388,7 @@ public class ControllerManager extends Manager {
 		
 		return lights;
 	}
+	
 	
 	// Save the configuration of the lights to the structure
 	public void saveLightStatus(){

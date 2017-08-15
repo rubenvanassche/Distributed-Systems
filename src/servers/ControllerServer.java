@@ -76,13 +76,21 @@ public class ControllerServer extends Server implements protocols.controller.Con
 
 	@Override
 	public boolean turnLightOn(int id) throws AvroRemoteException, Failure {
-		this.manager.turnLightOn(id);
+		try{
+			this.manager.setLightStatus(id, true);
+		}catch(Failure e){
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public boolean turnLightOff(int id) throws AvroRemoteException, Failure {
-		this.manager.turnLightOff(id);
+		try{
+			this.manager.setLightStatus(id, false);
+		}catch(Failure e){
+			return false;
+		}
 		return true;
 	}
 
