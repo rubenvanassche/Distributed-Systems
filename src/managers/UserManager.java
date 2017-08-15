@@ -198,5 +198,33 @@ public class UserManager extends ControlledManager {
 		}
     }
 
-
+	@Command(description="Try to open the fridge")
+    public void openFridge(int id) {
+		if(this.user.inHouse == false){
+    		System.out.println("[ERROR] User not in house");
+    		return;
+    	}
+		
+		try {
+			protocols.controller.Device fridgeInfo = this.controller.openFridge(id, this.user.id);
+		} catch (AvroRemoteException e) {
+			// TODO Connection to controller lost
+			e.printStackTrace();
+		}
+    }
+	
+	@Command(description="Try to close the fridge")
+    public void closeFridge(int id) {
+		if(this.user.inHouse == false){
+    		System.out.println("[ERROR] User not in house");
+    		return;
+    	}
+		
+		try {
+			this.controller.closeFridge(id);
+		} catch (AvroRemoteException e) {
+			// TODO Connection to controller lost
+			e.printStackTrace();
+		}
+    }
 }

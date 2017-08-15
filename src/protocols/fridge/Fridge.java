@@ -8,12 +8,22 @@ package protocols.fridge;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Fridge {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[],\"messages\":{\"ping\":{\"request\":[],\"response\":\"boolean\"}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[],\"messages\":{\"ping\":{\"request\":[],\"response\":\"boolean\"},\"getItems\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"string\"}},\"removeItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"boolean\"},\"addItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"boolean\"},\"openFridge\":{\"request\":[{\"name\":\"userId\",\"type\":\"int\"}],\"response\":\"null\"},\"closeFridge\":{\"request\":[],\"response\":\"null\"}}}");
   boolean ping() throws org.apache.avro.AvroRemoteException;
+  java.util.List<java.lang.CharSequence> getItems() throws org.apache.avro.AvroRemoteException;
+  boolean removeItem(java.lang.CharSequence item) throws org.apache.avro.AvroRemoteException;
+  boolean addItem(java.lang.CharSequence item) throws org.apache.avro.AvroRemoteException;
+  java.lang.Void openFridge(int userId) throws org.apache.avro.AvroRemoteException;
+  java.lang.Void closeFridge() throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends Fridge {
     public static final org.apache.avro.Protocol PROTOCOL = protocols.fridge.Fridge.PROTOCOL;
     void ping(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
+    void getItems(org.apache.avro.ipc.Callback<java.util.List<java.lang.CharSequence>> callback) throws java.io.IOException;
+    void removeItem(java.lang.CharSequence item, org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
+    void addItem(java.lang.CharSequence item, org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
+    void openFridge(int userId, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
+    void closeFridge(org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
   }
 }

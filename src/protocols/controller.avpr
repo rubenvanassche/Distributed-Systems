@@ -9,7 +9,7 @@
 			{"name": "type", "type": "string"}
 		]},
 		{"name": "Failure", "type": "error", "doc" : "Failure", "fields": [
-			{"name": "message", "type": "string"}
+			{"name": "message2", "type": "string"}
 		]},
 		{"name": "LightStatus", "type": "record", "doc" : "Information about a light and if it's on/off", "fields": [
 			{"name": "id", "type": "int"},
@@ -19,6 +19,11 @@
 			{"name": "id", "type": "int"},
 			{"name": "online", "type": "boolean"},
 			{"name": "type", "type": "string"}
+		]},
+		{"name": "FridgeStatus", "type": "record", "doc" : "Information about a fridge if it is open and who is using it", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "opened", "type": "boolean"},
+			{"name": "userid", "type": "int"}
 		]}
 	],
 	"messages" : {
@@ -82,6 +87,32 @@
 			],
 			"response" : "boolean",
 			"errors": ["Failure"]
+		},
+		"fridgeIsEmpty" : {
+			"request" : [
+				{"name" : "id", "type": "int"}
+			],
+			"response" : "null"
+		},
+		"openFridge" : {
+			"request" : [
+				{"name" : "fridgeId", "type": "int"},
+				{"name" : "userId", "type": "int"}
+			],
+			"response" : "Device",
+			"errors": ["Failure"]
+		},
+		"closeFridge" : {
+			"request" : [
+				{"name" : "fridgeId", "type": "int"}
+			],
+			"response" : "null"
+		},
+		"fridgeStatus" : {
+			"request" : [
+				{"name" : "fridgeId", "type": "int"}
+			],
+			"response" : "FridgeStatus"
 		}
 	}
 }

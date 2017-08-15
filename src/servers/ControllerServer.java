@@ -8,8 +8,10 @@ import managers.ControllerManager;
 import protocols.controller.Device;
 import protocols.controller.DeviceStatus;
 import protocols.controller.Failure;
+import protocols.controller.FridgeStatus;
 import protocols.controller.LightStatus;
 import structures.Controller;
+import structures.Entity;
 
 public class ControllerServer extends Server implements protocols.controller.Controller {
 	public Controller controller;
@@ -97,6 +99,56 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	@Override
 	public List<LightStatus> getLights() throws AvroRemoteException, Failure {
 		return this.manager.lightStatus();
+	}
+
+	@Override
+	public Void fridgeIsEmpty(int id) throws AvroRemoteException {
+		this.manager.sendMessage("Fridge " + id + " is empty!");
+		return null;
+	}
+
+	@Override
+	public Device openFridge(int fridgeId, int userId) {
+		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
+			throw new Exception("Fridge " + fridgeId + " does not exists");
+		}
+		
+		if(this.manager.structure.getFridgeStatus().open == true){
+			throw new Failure("Fridge " + fridgeId + " already opened by user " + this.manager.structure.getFridgeStatus().userid);
+		}else{
+			this.manager.structure.openFridge(fridgeId, userId);
+			
+			// Send information for direct RPC between Fridge and User
+			Entity fridgeEntity = this.manager.structure.fridges.get(fridgeId);
+			return fridgeEntity.getProtocolDevice();
+		}
+	}
+
+	@Override
+	public Void closeFridge(int fridgeId) throws AvroRemoteException {
+		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
+			throw new Failure("Fridge " + fridgeId + " does not exists");
+		}
+		
+		if(this.manager.structure.getFridgeStatus().open == false){
+			throw new Failure("Fridge " + fridgeId + " already closed");
+		}else{
+			this.manager.structure.closeFridge(fridgeId);
+		}
+		
+		return null;
+	}
+
+	@Override
+	public FridgeStatus fridgeStatus(int fridgeId) throws AvroRemoteException {
+		FridgeStatus status = new FridgeStatus();
+		
+		structures.FridgeStatus s = this.manager.structure.getFridgeStatus();
+		status.setId(s.id);
+		status.setOpened(s.open);
+		status.setUserid(s.userid);
+		
+		return status;
 	}
 
 }

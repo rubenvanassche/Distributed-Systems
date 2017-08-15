@@ -52,6 +52,7 @@ public class ManagerFactory {
 		Server server = createServer(deviceServer, protocols.fridge.Fridge.class);
 		
 		FridgeManager manager = new FridgeManager(device, server);
+		deviceServer.manager = manager;
 		return manager;
 	}
 	

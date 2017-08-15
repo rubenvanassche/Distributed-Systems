@@ -24,6 +24,9 @@ public class Controller extends Device{
 	
 	// List of the status of all the lights
 	public List<LightStatus> lightStatus = new LinkedList<LightStatus>();
+
+	// List of fridges and if they are opened
+	public Map<Integer, FridgeStatus> openFridges = new HashMap<Integer, FridgeStatus>();
 	
 	// Amount of measurements to keep
 	public int amountOfMeasurements;
@@ -40,6 +43,7 @@ public class Controller extends Device{
 		
 		if(type.equals(Type.FRIDGE)){
 			this.fridges.put(device.getId(), entity);
+			this.openFridges.put(device.getId(), new FridgeStatus(device.getId()));
 		}else if(type.equals(Type.LIGHT)){
 			this.lights.put(device.getId(), entity);
 		}else if(type.equals(Type.SENSOR)){
@@ -174,6 +178,33 @@ public class Controller extends Device{
 		}else{
 			return false;
 		}
+	}
+	
+	// Open a fridge
+	public Boolean openFridge(int fridgeId, int userId) throws Failure{
+		if(this.openFridges.get(id).open == true){
+			throw new Failure("Fridge already opened");
+		}
+		
+		this.openFridges.get(id).open = true;
+		this.openFridges.get(id).userid = userId;
+		return true;
+	}
+	
+	// Close a fridge
+	public Boolean closeFridge(int id) throws Failure{
+		if(this.openFridges.get(id).open == false){
+			throw new Failure("Fridge already closed");
+		}
+		
+		this.openFridges.get(id).open = true;
+		this.openFridges.get(id).userid = 0;
+		return true;
+	}
+	
+	// Get the fridge status
+	public FridgeStatus getFridgeStatus(){
+		return this.openFridges.get(id);
 	}
 	
 }

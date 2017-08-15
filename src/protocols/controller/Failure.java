@@ -8,9 +8,9 @@ package protocols.controller;
 /** Failure */
 @org.apache.avro.specific.AvroGenerated
 public class Failure extends org.apache.avro.specific.SpecificExceptionBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"error\",\"name\":\"Failure\",\"namespace\":\"protocols.controller\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"message\",\"type\":\"string\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"error\",\"name\":\"Failure\",\"namespace\":\"protocols.controller\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"message2\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public java.lang.CharSequence message$;
+  @Deprecated public java.lang.CharSequence message2;
 
   public Failure() {
     super();
@@ -32,7 +32,7 @@ public class Failure extends org.apache.avro.specific.SpecificExceptionBase impl
   // Used by DatumWriter.  Applications should not call. 
   public java.lang.Object get(int field$) {
     switch (field$) {
-    case 0: return message$;
+    case 0: return message2;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -40,24 +40,24 @@ public class Failure extends org.apache.avro.specific.SpecificExceptionBase impl
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: message$ = (java.lang.CharSequence)value$; break;
+    case 0: message2 = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
   /**
-   * Gets the value of the 'message$' field.
+   * Gets the value of the 'message2' field.
    */
-  public java.lang.CharSequence getMessage$() {
-    return message$;
+  public java.lang.CharSequence getMessage2() {
+    return message2;
   }
 
   /**
-   * Sets the value of the 'message$' field.
+   * Sets the value of the 'message2' field.
    * @param value the value to set.
    */
-  public void setMessage$(java.lang.CharSequence value) {
-    this.message$ = value;
+  public void setMessage2(java.lang.CharSequence value) {
+    this.message2 = value;
   }
 
   /** Creates a new Failure RecordBuilder */
@@ -81,7 +81,7 @@ public class Failure extends org.apache.avro.specific.SpecificExceptionBase impl
   public static class Builder extends org.apache.avro.specific.SpecificErrorBuilderBase<Failure>
     implements org.apache.avro.data.ErrorBuilder<Failure> {
 
-    private java.lang.CharSequence message$;
+    private java.lang.CharSequence message2;
 
     /** Creates a new Builder */
     private Builder() {
@@ -91,8 +91,8 @@ public class Failure extends org.apache.avro.specific.SpecificExceptionBase impl
     /** Creates a Builder by copying an existing Builder */
     private Builder(protocols.controller.Failure.Builder other) {
       super(other);
-      if (isValidValue(fields()[0], other.message$)) {
-        this.message$ = data().deepCopy(fields()[0].schema(), other.message$);
+      if (isValidValue(fields()[0], other.message2)) {
+        this.message2 = data().deepCopy(fields()[0].schema(), other.message2);
         fieldSetFlags()[0] = true;
       }
     }
@@ -100,8 +100,8 @@ public class Failure extends org.apache.avro.specific.SpecificExceptionBase impl
     /** Creates a Builder by copying an existing Failure instance */
     private Builder(protocols.controller.Failure other) {
       super(other);
-      if (isValidValue(fields()[0], other.message$)) {
-        this.message$ = data().deepCopy(fields()[0].schema(), other.message$);
+      if (isValidValue(fields()[0], other.message2)) {
+        this.message2 = data().deepCopy(fields()[0].schema(), other.message2);
         fieldSetFlags()[0] = true;
       }
     }
@@ -130,27 +130,27 @@ public class Failure extends org.apache.avro.specific.SpecificExceptionBase impl
       return this;
     }
 
-    /** Gets the value of the 'message$' field */
-    public java.lang.CharSequence getMessage$() {
-      return message$;
+    /** Gets the value of the 'message2' field */
+    public java.lang.CharSequence getMessage2() {
+      return message2;
     }
     
-    /** Sets the value of the 'message$' field */
-    public protocols.controller.Failure.Builder setMessage$(java.lang.CharSequence value) {
+    /** Sets the value of the 'message2' field */
+    public protocols.controller.Failure.Builder setMessage2(java.lang.CharSequence value) {
       validate(fields()[0], value);
-      this.message$ = value;
+      this.message2 = value;
       fieldSetFlags()[0] = true;
       return this; 
     }
     
-    /** Checks whether the 'message$' field has been set */
-    public boolean hasMessage$() {
+    /** Checks whether the 'message2' field has been set */
+    public boolean hasMessage2() {
       return fieldSetFlags()[0];
     }
     
-    /** Clears the value of the 'message$' field */
-    public protocols.controller.Failure.Builder clearMessage$() {
-      message$ = null;
+    /** Clears the value of the 'message2' field */
+    public protocols.controller.Failure.Builder clearMessage2() {
+      message2 = null;
       fieldSetFlags()[0] = false;
       return this;
     }
@@ -159,7 +159,7 @@ public class Failure extends org.apache.avro.specific.SpecificExceptionBase impl
     public Failure build() {
       try {
         Failure record = new Failure(getValue(), getCause());
-        record.message$ = fieldSetFlags()[0] ? this.message$ : (java.lang.CharSequence) defaultValue(fields()[0]);
+        record.message2 = fieldSetFlags()[0] ? this.message2 : (java.lang.CharSequence) defaultValue(fields()[0]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

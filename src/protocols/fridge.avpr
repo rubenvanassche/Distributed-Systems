@@ -5,6 +5,26 @@
 		"ping" : {
 			"request" : [],
 			"response" : "boolean"
+		},
+		"getItems" : {
+			"request" : [],
+			"response" : {"type": "array", "items": "string"}
+		},
+		"removeItem" : {
+			"request" : [{"name" : "item", "type" : "string"}],
+			"response" : "boolean"
+		},
+		"addItem" : {
+			"request" : [{"name" : "item", "type" : "string"}],
+			"response" : "boolean"
+		},
+		"openFridge" : {
+			"request" : [{"name" : "userId", "type" : "int"}],
+			"response" : "null"
+		},
+		"closeFridge" : {
+			"request" : [],
+			"response" : "null"
 		}
 	}
 }

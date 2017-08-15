@@ -16,7 +16,7 @@ import protocols.controller.Failure;
 import structures.Device;
 
 public class ControlledManager extends Manager {
-	Controller controller;  // RPC connection to controller
+	public Controller controller;  // RPC connection to controller
 	public Device structure;  // Structure
 	
 	

@@ -207,6 +207,19 @@ public class ControllerManager extends Manager {
         }
     }
 	
+	@Command(description="Send a message to all the users")
+    public void sendMessage(
+    		@Param(name="message", description="The message")
+    		String message
+    		) {
+
+			for(Entry<Integer, User> entry : this.userProxies.entrySet()){				
+				try {
+					entry.getValue().message("[INFO] " + message);
+				} catch (AvroRemoteException e) { }
+			}
+    }
+	
 	public void userEnters(int id){
 		this.structure.users.get(id).online = true;
 		
@@ -359,14 +372,65 @@ public class ControllerManager extends Manager {
 		return devices;
 	}
 	
+	@Command(description="Get the fridges in the house")
+    public void fridges() {
+        for(Map.Entry<Integer, Fridge> entry : this.fridgeProxies.entrySet()){
+        	Integer id = entry.getKey();
+        	try {
+        		entry.getValue().ping();
+				System.out.println("Fridge ID: " + id);
+			} catch (AvroRemoteException e) {
+				System.out.println("Fridge ID: " + id + " - data unavailable");
+				
+				// Set device offline
+				try {
+					this.structure.setDeviceOffline(id, Type.FRIDGE);
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
+			}
+        }
+    }
+	
+	@Command(description="Get the users of the house")
+    public void users() {
+        for(Map.Entry<Integer, User> entry : this.userProxies.entrySet()){
+        	Integer id = entry.getKey();
+        	try {
+        		Boolean inHouse = entry.getValue().inHouse();
+        		
+        		if(inHouse == true){
+        			System.out.println("User ID: " + id + " - at home");
+        		}else{
+        			System.out.println("User ID: " + id + " - not at home");
+        		}
+			} catch (AvroRemoteException e) {
+				System.out.println("User ID: " + id + " - data unavailable");
+				
+				// Set device offline
+				try {
+					this.structure.setDeviceOffline(id, Type.FRIDGE);
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
+			}
+        }
+    }
+	
 	@Command(description="Get all the devices")
 	public void devices(){
+		System.out.println("Fridges");
+		System.out.println("-------");
+		this.fridges();
 		System.out.println("Lights");
 		System.out.println("------");
 		this.lights();
 		System.out.println("Temperature Sensors");
 		System.out.println("-------------------");
 		this.sensors();
+		System.out.println("Users");
+		System.out.println("-----");
+		this.users();
 	}
 
 	// Get the status of all the lights
@@ -444,4 +508,6 @@ public class ControllerManager extends Manager {
 		
 		return count;
 	}
+
+	
 }
