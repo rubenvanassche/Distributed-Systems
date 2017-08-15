@@ -55,7 +55,7 @@ public class ControllerServer extends Server implements protocols.controller.Con
 
 	@Override
 	public boolean userEnters(int id) throws AvroRemoteException, Failure {
-		this.manager.userLeave(id);
+		this.manager.userEnters(id);
 		return true;
 	}
 

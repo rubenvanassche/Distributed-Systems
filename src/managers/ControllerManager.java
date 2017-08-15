@@ -91,6 +91,13 @@ public class ControllerManager extends Manager {
 				}
 			} catch (AvroRemoteException e) {
 				System.out.println("Light ID: " + id  + " - data unavailable");
+				
+				// Set device offline
+				try {
+					this.structure.setDeviceOffline(id, Type.LIGHT);
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
 			}
         }
     }
@@ -111,8 +118,14 @@ public class ControllerManager extends Manager {
 			light.powerOn();
 			System.out.println("Light ID: " + id  + " on");
 		} catch (AvroRemoteException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Light ID: " + id  + " is offline");
+			
+			// Set device offline
+			try {
+				this.structure.setDeviceOffline(id, Type.LIGHT);
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
 		}
     }
 	
@@ -132,8 +145,14 @@ public class ControllerManager extends Manager {
 			light.powerOff();
 			System.out.println("Light ID: " + id  + " off");
 		} catch (AvroRemoteException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Light ID: " + id  + " is offline");
+			
+			// Set device offline
+			try {
+				this.structure.setDeviceOffline(id, Type.LIGHT);
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
 		}
     }
 
@@ -145,6 +164,13 @@ public class ControllerManager extends Manager {
 				System.out.println("Sensor ID: " + id + " - " + entry.getValue().getTemperature());
 			} catch (AvroRemoteException e) {
 				System.out.println("Sensor ID: " + id + " - data unavailable");
+				
+				// Set device offline
+				try {
+					this.structure.setDeviceOffline(id, Type.SENSOR);
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
 			}
         }
     }
@@ -164,8 +190,14 @@ public class ControllerManager extends Manager {
 		try {
 			System.out.println("Sensor ID: " + id  + " " + sensor.getTemperature());
 		} catch (AvroRemoteException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Sensor ID: " + id  + " is offline, last measurement: " + this.structure.getLastTemperature(id));
+			
+			// Set device offline
+			try {
+				this.structure.setDeviceOffline(id, Type.SENSOR);
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
 		}
     }
 	
@@ -182,10 +214,62 @@ public class ControllerManager extends Manager {
 	
 	public void userEnters(int id){
 		this.structure.users.get(id).online = true;
+		
+		// Send information to the other users
+		for(Entry<Integer, User> entry : this.userProxies.entrySet()){
+			if(entry.getKey() == id){
+				// User who just entered
+				continue;
+			}
+			
+			try {
+				entry.getValue().message("[INFO] User " + id + " has entered the house.");
+			} catch (AvroRemoteException e) {
+				// Set device offline
+				try {
+					this.structure.setDeviceOnline(id, Type.USER);
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
+				
+			}
+		}
+		
+		// Check if lights need to be restored
+		if(this.structure.isLightStatusSaved() == true){
+			this.restoreLightStatus();
+			this.structure.lightStatus.clear();
+		}
 	}
     
 	public void userLeave(int id){
 		this.structure.users.get(id).online = false;
+		
+		// Send information to the other users
+		for(Entry<Integer, User> entry : this.userProxies.entrySet()){
+			if(entry.getKey() == id){
+				// User who left
+				continue;
+			}
+			
+			try {
+				entry.getValue().message("[INFO] User " + id + " has left the house.");
+			} catch (AvroRemoteException e) {
+				// Set device offline
+				try {
+					this.structure.setDeviceOffline(id, Type.USER);
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
+				
+			}
+		}
+		
+		// check if we have to save the light status and dim the lights
+		if(this.getAmountOfUsersHome() == 0){
+			this.saveLightStatus();
+			this.dimLights();
+		}
 	}
 	
 	public List<DeviceStatus> devicesStatus(){
@@ -202,6 +286,13 @@ public class ControllerManager extends Manager {
 				status.setOnline(false);
 			}
 			
+			// Set device status in the controller structure
+			try {
+				this.structure.setDeviceStatus(entry.getKey(), Type.FRIDGE, status.getOnline());
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
+			
 			devices.add(status);
 		}
 		
@@ -214,6 +305,13 @@ public class ControllerManager extends Manager {
 			} catch (AvroRemoteException e) {
 				// device is not online
 				status.setOnline(false);
+			}
+			
+			// Set device status in the controller structure
+			try {
+				this.structure.setDeviceStatus(entry.getKey(), Type.LIGHT, status.getOnline());
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
 			}
 			
 			devices.add(status);
@@ -230,6 +328,13 @@ public class ControllerManager extends Manager {
 				status.setOnline(false);
 			}
 			
+			// Set device status in the controller structure
+			try {
+				this.structure.setDeviceStatus(entry.getKey(), Type.SENSOR, status.getOnline());
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
+			
 			devices.add(status);
 		}
 		
@@ -243,6 +348,13 @@ public class ControllerManager extends Manager {
 			} catch (AvroRemoteException e) {
 				// device is not online
 				status.setOnline(false);
+			}
+			
+			// Set device status in the controller structure
+			try {
+				this.structure.setDeviceStatus(entry.getKey(), Type.USER, status.getOnline());
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
 			}
 			
 			
@@ -262,6 +374,7 @@ public class ControllerManager extends Manager {
 		this.sensors();
 	}
 
+	// Get the status of all the lights
 	public List<LightStatus> lightStatus(){
 		List<LightStatus> lights = new LinkedList<LightStatus>();
 		
@@ -279,5 +392,60 @@ public class ControllerManager extends Manager {
 		}
 		
 		return lights;
+	}
+	
+	// Save the configuration of the lights to the structure
+	public void saveLightStatus(){
+		this.structure.lightStatus = this.lightStatus();
+	}
+	
+	// restore the configuration of the lights to to all the lights
+	public void restoreLightStatus(){
+		for(LightStatus status : this.structure.lightStatus){
+			// Get the RPC connection to the light
+			try{
+				if(status.getState() == true){
+					this.lightProxies.get(status.getId()).powerOn();
+				}else{
+					this.lightProxies.get(status.getId()).powerOff();
+				}
+			} catch (AvroRemoteException e){
+				// device not online
+				continue;
+			}
+			
+		}
+	}
+	
+	// Poweroff all the lights
+	public void dimLights(){
+		for(LightStatus status : this.structure.lightStatus){
+			// Get the RPC connection to the light
+			try{
+				this.lightProxies.get(status.getId()).powerOff();
+			} catch (AvroRemoteException e){
+				// device not online
+				continue;
+			}
+			
+		}
+	}
+	
+	// Returns the amount of users in the house
+	public int getAmountOfUsersHome(){
+		int count = 0;
+		
+		for(Entry<Integer, User> entry : this.userProxies.entrySet()){
+			try {
+				if(entry.getValue().inHouse() == true){
+					count += 1;
+				}
+			} catch (AvroRemoteException e) {
+				// user not at home
+				continue;
+			}
+		}
+		
+		return count;
 	}
 }

@@ -5,6 +5,11 @@
 		"inHouse" : {
 			"request" : [],
 			"response" : "boolean"
+		},
+		"message" : {
+			"doc" : "Send a message t",
+			"request" : [{"name" : "contents", "type" : "string"}],
+			"response" : "null"
 		}
 	}
 }

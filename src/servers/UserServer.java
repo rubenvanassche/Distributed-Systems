@@ -17,4 +17,11 @@ public class UserServer extends Server implements protocols.user.User {
 	public boolean inHouse() throws AvroRemoteException {
 		return user.inHouse;
 	}
+
+	@Override
+	public Void message(CharSequence contents) throws AvroRemoteException {
+		System.out.println(contents.toString());
+		return null;
+	}
+
 }
