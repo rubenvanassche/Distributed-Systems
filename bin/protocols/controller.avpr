@@ -9,7 +9,7 @@
 			{"name": "type", "type": "string"}
 		]},
 		{"name": "Failure", "type": "error", "doc" : "Failure", "fields": [
-			{"name": "message2", "type": "string"}
+			{"name": "info", "type": "string"}
 		]},
 		{"name": "LightStatus", "type": "record", "doc" : "Information about a light and if it's on/off", "fields": [
 			{"name": "id", "type": "int"},

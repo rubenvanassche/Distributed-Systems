@@ -78,21 +78,13 @@ public class ControllerServer extends Server implements protocols.controller.Con
 
 	@Override
 	public boolean turnLightOn(int id) throws AvroRemoteException, Failure {
-		try{
-			this.manager.setLightStatus(id, true);
-		}catch(Failure e){
-			return false;
-		}
+		this.manager.setLightStatus(id, true);
 		return true;
 	}
 
 	@Override
 	public boolean turnLightOff(int id) throws AvroRemoteException, Failure {
-		try{
-			this.manager.setLightStatus(id, false);
-		}catch(Failure e){
-			return false;
-		}
+		this.manager.setLightStatus(id, false);
 		return true;
 	}
 
@@ -108,13 +100,17 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	}
 
 	@Override
-	public Device openFridge(int fridgeId, int userId) {
+	public Device openFridge(int fridgeId, int userId) throws AvroRemoteException {
 		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
-			throw new Exception("Fridge " + fridgeId + " does not exists");
+			Failure f = new Failure();
+			f.setInfo("Fridge " + fridgeId + " does not exists");
+			throw f;
 		}
 		
 		if(this.manager.structure.getFridgeStatus().open == true){
-			throw new Failure("Fridge " + fridgeId + " already opened by user " + this.manager.structure.getFridgeStatus().userid);
+			Failure f = new Failure();
+			f.setInfo("Fridge " + fridgeId + " already opened by user " + this.manager.structure.getFridgeStatus().userid);
+			throw f;
 		}else{
 			this.manager.structure.openFridge(fridgeId, userId);
 			
@@ -127,11 +123,15 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	@Override
 	public Void closeFridge(int fridgeId) throws AvroRemoteException {
 		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
-			throw new Failure("Fridge " + fridgeId + " does not exists");
+			Failure f = new Failure();
+			f.setInfo("Fridge " + fridgeId + " does not exists");
+			throw f;
 		}
 		
 		if(this.manager.structure.getFridgeStatus().open == false){
-			throw new Failure("Fridge " + fridgeId + " already closed");
+			Failure f = new Failure();
+			f.setInfo("Fridge " + fridgeId + " already closed");
+			throw f;
 		}else{
 			this.manager.structure.closeFridge(fridgeId);
 		}

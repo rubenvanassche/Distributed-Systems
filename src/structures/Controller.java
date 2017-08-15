@@ -51,14 +51,18 @@ public class Controller extends Device{
 		}else if(type.equals(Type.USER)){
 			this.users.put(device.getId(), entity);
 		}else{
-			throw new Failure("[ERROR] trying to register a device with an unkown type");
+			Failure f = new Failure();
+			f.setInfo("[ERROR] trying to register a device with an unkown type");
+			throw f;
 		}
 	}
 	
 	// Update the temperature in the controller 
 	public void updateTemperature(int id, double temperature) throws Failure{
 		if(sensors.containsKey(id) == false){
-			throw new Failure("[ERROR] trying to update a sensor which ID doens't exists");
+			Failure f = new Failure();
+			f.setInfo("[ERROR] trying to update a sensor which ID doens't exists");
+			throw f;
 		}
 		
 		// add history
@@ -183,7 +187,9 @@ public class Controller extends Device{
 	// Open a fridge
 	public Boolean openFridge(int fridgeId, int userId) throws Failure{
 		if(this.openFridges.get(id).open == true){
-			throw new Failure("Fridge already opened");
+			Failure f = new Failure();
+			f.setInfo("Fridge already opened");
+			throw f;
 		}
 		
 		this.openFridges.get(id).open = true;
@@ -194,7 +200,9 @@ public class Controller extends Device{
 	// Close a fridge
 	public Boolean closeFridge(int id) throws Failure{
 		if(this.openFridges.get(id).open == false){
-			throw new Failure("Fridge already closed");
+			Failure f = new Failure();
+			f.setInfo("Fridge already closed");
+			throw f;
 		}
 		
 		this.openFridges.get(id).open = true;

@@ -111,7 +111,7 @@ public class ControllerManager extends Manager {
 		try {
 			this.setLightStatus(id, true);
 		} catch (Failure e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getInfo());
 		}
 		
 		System.out.println("Light ID: " + id  + " on");
@@ -126,7 +126,7 @@ public class ControllerManager extends Manager {
 		try {
 			this.setLightStatus(id, false);
 		} catch (Failure e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getInfo());
 		}
 		
 		System.out.println("Light ID: " + id  + " off");
@@ -137,7 +137,9 @@ public class ControllerManager extends Manager {
 		Light light = this.lightProxies.get(id);
 		
 		if(light == null){
-			throw new Failure("Light ID: " + id  + " does not exists");
+			Failure f = new Failure();
+			f.setInfo("Light ID: " + id  + " does not exists");
+			throw f;
 		}
 		
 		try {
@@ -147,7 +149,9 @@ public class ControllerManager extends Manager {
 				light.powerOff();
 			}
 		}catch (AvroRemoteException e) {
-			throw new Failure("Light ID: " + id  + " is offline");
+			Failure f = new Failure();
+			f.setInfo("Light ID: " + id  + " is offline");
+			throw f;
 		}
 	}
 

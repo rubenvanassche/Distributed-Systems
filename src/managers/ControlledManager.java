@@ -40,7 +40,7 @@ public class ControlledManager extends Manager {
 		try{
 			this.controller.register(structure.getProtocolDevice());
 		}catch (Failure e){
-			System.err.println("[Error] " + e.getMessage());
+			System.err.println("[Error] " + e.getInfo());
 		}catch (Exception e) {
 			// TODO: handle exception
 			System.err.println("[Error] Error in registering device with server");

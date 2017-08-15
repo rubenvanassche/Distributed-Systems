@@ -1,10 +1,16 @@
 package managers;
 
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.List;
 
 import org.apache.avro.AvroRemoteException;
+import org.apache.avro.ipc.SaslSocketTransceiver;
 import org.apache.avro.ipc.Server;
+import org.apache.avro.ipc.Transceiver;
+import org.apache.avro.ipc.specific.SpecificRequestor;
 
 import asg.cliche.Command;
 import asg.cliche.Param;
@@ -12,12 +18,15 @@ import protocols.controller.Controller;
 import protocols.controller.DeviceStatus;
 import protocols.controller.Failure;
 import protocols.controller.LightStatus;
+import protocols.fridge.Fridge;
 import protocols.light.Light;
 import structures.Device;
 import structures.User;
 
 public class UserManager extends ControlledManager {
 	public User user;
+	public Boolean usingFridge = false; // True when user has opened the fridge
+	public Fridge fridge; // RPC connection to a fridge
 
 	public UserManager(Device fstructure, Server server) {
 		super(fstructure, server);
@@ -25,8 +34,18 @@ public class UserManager extends ControlledManager {
 		this.user = (User) fstructure;
 	}
 	
+	// Check if the user can call the controller (this cannot when the user is interacting with the fridge)
+	public Boolean canCallController(){
+		return !usingFridge;
+	}
+	
     @Command(description="Leave the house")
     public void leave() {
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the fridge");
+    		return;
+    	}
+    	
     	if(this.user.inHouse == false){
     		System.out.println("[ERROR] User already left the house");
     		return;
@@ -49,6 +68,11 @@ public class UserManager extends ControlledManager {
     		return;
     	}
     	
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the fridge");
+    		return;
+    	}
+    	
         this.user.inHouse = true;
         
         try {
@@ -61,6 +85,11 @@ public class UserManager extends ControlledManager {
     
     @Command(description="Get the temperature in the house")
     public void getTemperature() {
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the fridge");
+    		return;
+    	}
+    	
     	if(this.user.inHouse == false){
     		System.out.println("[ERROR] User not in house");
     		return;
@@ -76,6 +105,11 @@ public class UserManager extends ControlledManager {
     
     @Command(description="Get the temperature history in the house")
     public void getTemperatureHistory() {
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the fridge");
+    		return;
+    	}
+    	
     	if(this.user.inHouse == false){
     		System.out.println("[ERROR] User not in house");
     		return;
@@ -97,11 +131,6 @@ public class UserManager extends ControlledManager {
     		@Param(name="id", description="The identifier of the light")
     		Integer id
     		) {
-		if(this.user.inHouse == false){
-    		System.out.println("[ERROR] User not in house");
-    		return;
-    	}
-		
 		this.setLight(id, true);
     }
 	
@@ -110,15 +139,20 @@ public class UserManager extends ControlledManager {
     		@Param(name="id", description="The identifier of the light")
     		Integer id
     		) {
+		this.setLight(id, false);
+    }
+	
+	public void setLight(int id, Boolean active){
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the fridge");
+    		return;
+    	}
+		
 		if(this.user.inHouse == false){
     		System.out.println("[ERROR] User not in house");
     		return;
     	}
 		
-		this.setLight(id, false);
-    }
-	
-	public void setLight(int id, Boolean active){
 		try {
 			Boolean success = null;
 			if(active == true){
@@ -148,6 +182,11 @@ public class UserManager extends ControlledManager {
 	
 	@Command(description="Get information about devices in the house")
     public void devices() {
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the fridge");
+    		return;
+    	}
+		
 		if(this.user.inHouse == false){
     		System.out.println("[ERROR] User not in house");
     		return;
@@ -174,6 +213,11 @@ public class UserManager extends ControlledManager {
 	
 	@Command(description="Get information about the lights")
     public void lights() {
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the fridge");
+    		return;
+    	}
+		
 		if(this.user.inHouse == false){
     		System.out.println("[ERROR] User not in house");
     		return;
@@ -200,16 +244,37 @@ public class UserManager extends ControlledManager {
 
 	@Command(description="Try to open the fridge")
     public void openFridge(int id) {
+    	if(this.canCallController() == false){
+    		System.out.println("[WARNING] User should first close the other fridge");
+    		return;
+    	}
+		
 		if(this.user.inHouse == false){
     		System.out.println("[ERROR] User not in house");
     		return;
     	}
 		
+		protocols.controller.Device fridgeInfo = null; 
 		try {
-			protocols.controller.Device fridgeInfo = this.controller.openFridge(id, this.user.id);
+			fridgeInfo = this.controller.openFridge(id, this.user.id);
+			this.usingFridge = true;
+		} catch(Failure e){
+			System.out.println(e.getInfo());
+			return; // We dont want to start a connection with this fridge
 		} catch (AvroRemoteException e) {
 			// TODO Connection to controller lost
 			e.printStackTrace();
+		}
+		
+		
+		// Now lets connect the fridge proxy with the actual device
+		try{
+			InetAddress ipAddress = InetAddress.getByName(fridgeInfo.getIpadress().toString());
+			InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, fridgeInfo.getPort());
+			Transceiver client = new SaslSocketTransceiver(socketAddress);
+			fridge = (Fridge) SpecificRequestor.getClient(Fridge.class, client);
+		}catch(IOException e){
+			System.err.println("[Error] Connecting to fridge");
 		}
     }
 	
@@ -222,6 +287,14 @@ public class UserManager extends ControlledManager {
 		
 		try {
 			this.controller.closeFridge(id);
+			
+			// Remove the RPC connection
+			this.fridge = null;
+			
+			this.usingFridge = false;
+		} catch(Failure e){
+			System.out.println(e.getInfo());
+			return; // We dont want to start a connection with this fridge
 		} catch (AvroRemoteException e) {
 			// TODO Connection to controller lost
 			e.printStackTrace();
