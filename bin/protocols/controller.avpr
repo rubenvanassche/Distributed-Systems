@@ -92,7 +92,8 @@
 			"request" : [
 				{"name" : "id", "type": "int"}
 			],
-			"response" : "null"
+			"response" : "null",
+			"errors": ["Failure"]
 		},
 		"openFridge" : {
 			"request" : [
@@ -104,15 +105,25 @@
 		},
 		"closeFridge" : {
 			"request" : [
-				{"name" : "fridgeId", "type": "int"}
+				{"name" : "fridgeId", "type": "int"},
+				{"name" : "userId", "type": "int"}
 			],
-			"response" : "null"
+			"response" : "null",
+			"errors": ["Failure"]
 		},
 		"fridgeStatus" : {
 			"request" : [
 				{"name" : "fridgeId", "type": "int"}
 			],
-			"response" : "FridgeStatus"
+			"response" : "FridgeStatus",
+			"errors": ["Failure"]
+		},
+		"getFridgeItems" : {
+		"request" : [
+				{"name" : "fridgeId", "type": "int"}
+			],
+			"response" : {"type" : "array", "items" : "string"},
+			"errors": ["Failure"]
 		}
 	}
 }

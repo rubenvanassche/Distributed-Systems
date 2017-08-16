@@ -173,7 +173,7 @@ public class UserManager extends ControlledManager {
 				System.out.println("Light " + id + " offline");
 			}
 		} catch (Failure e ){
-			System.out.println(e.getMessage());
+			System.out.println(e.getInfo());
 		} catch (AvroRemoteException e) {
 			// TODO controlelr down, take over
 			e.printStackTrace();
@@ -243,7 +243,9 @@ public class UserManager extends ControlledManager {
     }
 
 	@Command(description="Try to open the fridge")
-    public void openFridge(int id) {
+    public void openFridge(
+    		@Param(name="id", description="The identifier of the fridge")
+    		int id) {
     	if(this.canCallController() == false){
     		System.out.println("[WARNING] User should first close the other fridge");
     		return;
@@ -279,14 +281,16 @@ public class UserManager extends ControlledManager {
     }
 	
 	@Command(description="Try to close the fridge")
-    public void closeFridge(int id) {
+    public void closeFridge(
+    		@Param(name="id", description="The identifier of the fridge")
+    		int id) {
 		if(this.user.inHouse == false){
     		System.out.println("[ERROR] User not in house");
     		return;
     	}
 		
 		try {
-			this.controller.closeFridge(id);
+			this.controller.closeFridge(id, this.user.id);
 			
 			// Remove the RPC connection
 			this.fridge = null;
@@ -294,10 +298,93 @@ public class UserManager extends ControlledManager {
 			this.usingFridge = false;
 		} catch(Failure e){
 			System.out.println(e.getInfo());
-			return; // We dont want to start a connection with this fridge
 		} catch (AvroRemoteException e) {
 			// TODO Connection to controller lost
 			e.printStackTrace();
 		}
     }
+	
+	@Command(description="Add an item to the fridge")
+    public void addItemToFridge(
+    		@Param(name="item", description="string")
+    		String item) {
+		
+		if(this.user.inHouse == false){
+    		System.out.println("[ERROR] User not in house");
+    		return;
+    	}
+		
+		if(this.canCallController() == true){
+    		System.out.println("[ERROR] User has not opened a fridge");
+    		return;
+    	}
+		
+		try {
+			this.fridge.addItem(item);
+		} catch(protocols.fridge.Failure e){
+			System.out.println(e.getInfo());
+		} catch (AvroRemoteException e) {
+			// Connection to fridge lost
+			this.fridge = null;
+			this.usingFridge = false;
+		}
+    }
+	
+	@Command(description="Remove an item from the fridge")
+    public void removeItemFromFridge(
+    		@Param(name="item", description="string")
+    		String item) {
+		
+		if(this.user.inHouse == false){
+    		System.out.println("[ERROR] User not in house");
+    		return;
+    	}
+		
+		if(this.canCallController() == true){
+    		System.out.println("[ERROR] User has not opened a fridge");
+    		return;
+    	}
+		
+		try {
+			this.fridge.removeItem(item);
+		} catch(protocols.fridge.Failure e){
+			System.out.println(e.getInfo());
+		} catch (AvroRemoteException e) {
+			// Connection to fridge lost
+			this.fridge = null;
+			this.usingFridge = false;
+		}
+    }
+	
+	@Command(description="Get items in a fridge identified by id")
+    public void getItemsInFridge(
+    		@Param(name="id", description="int")
+    		int id) {
+		
+			try {
+				for(CharSequence item : this.getFridgeItems(id)){
+					System.out.println(item);
+				}
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+    }
+	
+	public List<CharSequence> getFridgeItems(int id) throws Exception{
+		if(this.user.inHouse == false){
+    		throw new Exception("[ERROR] User not in house");
+    	}
+		
+		List<CharSequence> out = null;
+		
+		try {
+			out =  this.controller.getFridgeItems(id);
+		} catch(Failure e){
+			throw new Exception(e.getInfo().toString());
+		} catch (AvroRemoteException e) {
+			// TODO connection to controller lost
+		}
+		
+		return out;
+	}
 }

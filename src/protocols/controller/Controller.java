@@ -8,7 +8,7 @@ package protocols.controller;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Controller {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Controller\",\"namespace\":\"protocols.controller\",\"types\":[{\"type\":\"record\",\"name\":\"Device\",\"doc\":\"Device info for the network\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"},{\"name\":\"type\",\"type\":\"string\"}]},{\"type\":\"error\",\"name\":\"Failure\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"info\",\"type\":\"string\"}]},{\"type\":\"record\",\"name\":\"LightStatus\",\"doc\":\"Information about a light and if it's on/off\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"state\",\"type\":\"boolean\"}]},{\"type\":\"record\",\"name\":\"DeviceStatus\",\"doc\":\"Information about a device and if it's online or not\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"online\",\"type\":\"boolean\"},{\"name\":\"type\",\"type\":\"string\"}]},{\"type\":\"record\",\"name\":\"FridgeStatus\",\"doc\":\"Information about a fridge if it is open and who is using it\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"opened\",\"type\":\"boolean\"},{\"name\":\"userid\",\"type\":\"int\"}]}],\"messages\":{\"register\":{\"request\":[{\"name\":\"device\",\"type\":\"Device\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"updateTemperature\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"value\",\"type\":\"double\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"userLeave\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"userEnters\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"getTemperature\":{\"request\":[],\"response\":\"double\",\"errors\":[\"Failure\"]},\"getTemperatureHistory\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"double\"},\"errors\":[\"Failure\"]},\"getDevices\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"DeviceStatus\"},\"errors\":[\"Failure\"]},\"getLights\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"LightStatus\"},\"errors\":[\"Failure\"]},\"turnLightOn\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"turnLightOff\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"fridgeIsEmpty\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"null\"},\"openFridge\":{\"request\":[{\"name\":\"fridgeId\",\"type\":\"int\"},{\"name\":\"userId\",\"type\":\"int\"}],\"response\":\"Device\",\"errors\":[\"Failure\"]},\"closeFridge\":{\"request\":[{\"name\":\"fridgeId\",\"type\":\"int\"}],\"response\":\"null\"},\"fridgeStatus\":{\"request\":[{\"name\":\"fridgeId\",\"type\":\"int\"}],\"response\":\"FridgeStatus\"}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Controller\",\"namespace\":\"protocols.controller\",\"types\":[{\"type\":\"record\",\"name\":\"Device\",\"doc\":\"Device info for the network\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"},{\"name\":\"type\",\"type\":\"string\"}]},{\"type\":\"error\",\"name\":\"Failure\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"info\",\"type\":\"string\"}]},{\"type\":\"record\",\"name\":\"LightStatus\",\"doc\":\"Information about a light and if it's on/off\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"state\",\"type\":\"boolean\"}]},{\"type\":\"record\",\"name\":\"DeviceStatus\",\"doc\":\"Information about a device and if it's online or not\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"online\",\"type\":\"boolean\"},{\"name\":\"type\",\"type\":\"string\"}]},{\"type\":\"record\",\"name\":\"FridgeStatus\",\"doc\":\"Information about a fridge if it is open and who is using it\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"opened\",\"type\":\"boolean\"},{\"name\":\"userid\",\"type\":\"int\"}]}],\"messages\":{\"register\":{\"request\":[{\"name\":\"device\",\"type\":\"Device\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"updateTemperature\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"value\",\"type\":\"double\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"userLeave\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"userEnters\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"getTemperature\":{\"request\":[],\"response\":\"double\",\"errors\":[\"Failure\"]},\"getTemperatureHistory\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"double\"},\"errors\":[\"Failure\"]},\"getDevices\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"DeviceStatus\"},\"errors\":[\"Failure\"]},\"getLights\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"LightStatus\"},\"errors\":[\"Failure\"]},\"turnLightOn\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"turnLightOff\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"boolean\",\"errors\":[\"Failure\"]},\"fridgeIsEmpty\":{\"request\":[{\"name\":\"id\",\"type\":\"int\"}],\"response\":\"null\",\"errors\":[\"Failure\"]},\"openFridge\":{\"request\":[{\"name\":\"fridgeId\",\"type\":\"int\"},{\"name\":\"userId\",\"type\":\"int\"}],\"response\":\"Device\",\"errors\":[\"Failure\"]},\"closeFridge\":{\"request\":[{\"name\":\"fridgeId\",\"type\":\"int\"},{\"name\":\"userId\",\"type\":\"int\"}],\"response\":\"null\",\"errors\":[\"Failure\"]},\"fridgeStatus\":{\"request\":[{\"name\":\"fridgeId\",\"type\":\"int\"}],\"response\":\"FridgeStatus\",\"errors\":[\"Failure\"]},\"getFridgeItems\":{\"request\":[{\"name\":\"fridgeId\",\"type\":\"int\"}],\"response\":{\"type\":\"array\",\"items\":\"string\"},\"errors\":[\"Failure\"]}}}");
   /**
    */
   boolean register(protocols.controller.Device device) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
@@ -41,16 +41,19 @@ public interface Controller {
   boolean turnLightOff(int id) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
   /**
    */
-  java.lang.Void fridgeIsEmpty(int id) throws org.apache.avro.AvroRemoteException;
+  java.lang.Void fridgeIsEmpty(int id) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
   /**
    */
   protocols.controller.Device openFridge(int fridgeId, int userId) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
   /**
    */
-  java.lang.Void closeFridge(int fridgeId) throws org.apache.avro.AvroRemoteException;
+  java.lang.Void closeFridge(int fridgeId, int userId) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
   /**
    */
-  protocols.controller.FridgeStatus fridgeStatus(int fridgeId) throws org.apache.avro.AvroRemoteException;
+  protocols.controller.FridgeStatus fridgeStatus(int fridgeId) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
+  /**
+   */
+  java.util.List<java.lang.CharSequence> getFridgeItems(int fridgeId) throws org.apache.avro.AvroRemoteException, protocols.controller.Failure;
 
   @SuppressWarnings("all")
   public interface Callback extends Controller {
@@ -106,10 +109,14 @@ public interface Controller {
     /**
      * @throws java.io.IOException The async call could not be completed.
      */
-    void closeFridge(int fridgeId, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
+    void closeFridge(int fridgeId, int userId, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
     /**
      * @throws java.io.IOException The async call could not be completed.
      */
     void fridgeStatus(int fridgeId, org.apache.avro.ipc.Callback<protocols.controller.FridgeStatus> callback) throws java.io.IOException;
+    /**
+     * @throws java.io.IOException The async call could not be completed.
+     */
+    void getFridgeItems(int fridgeId, org.apache.avro.ipc.Callback<java.util.List<java.lang.CharSequence>> callback) throws java.io.IOException;
   }
 }

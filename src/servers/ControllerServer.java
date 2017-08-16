@@ -94,16 +94,25 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	}
 
 	@Override
-	public Void fridgeIsEmpty(int id) throws AvroRemoteException {
+	public Void fridgeIsEmpty(int id) throws AvroRemoteException, Failure {
 		this.manager.sendMessage("Fridge " + id + " is empty!");
 		return null;
 	}
 
 	@Override
-	public Device openFridge(int fridgeId, int userId) throws AvroRemoteException {
+	public Device openFridge(int fridgeId, int userId) throws AvroRemoteException, Failure {
 		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
 			Failure f = new Failure();
 			f.setInfo("Fridge " + fridgeId + " does not exists");
+			throw f;
+		}
+		
+		// Check if fridge is still online
+		try{
+			this.manager.fridgeProxies.get(fridgeId).ping();
+		}catch(AvroRemoteException e){
+			Failure f = new Failure();
+			f.setInfo("Fridge " + fridgeId + " is offline");
 			throw f;
 		}
 		
@@ -121,16 +130,29 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	}
 
 	@Override
-	public Void closeFridge(int fridgeId) throws AvroRemoteException {
+	public Void closeFridge(int fridgeId, int userId) throws AvroRemoteException, Failure {
 		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
 			Failure f = new Failure();
 			f.setInfo("Fridge " + fridgeId + " does not exists");
 			throw f;
 		}
 		
+		// Check if fridge is still online
+		try{
+			this.manager.fridgeProxies.get(fridgeId).ping();
+		}catch(AvroRemoteException e){
+			Failure f = new Failure();
+			f.setInfo("Fridge " + fridgeId + " is offline");
+			throw f;
+		}
+		
 		if(this.manager.structure.getFridgeStatus().open == false){
 			Failure f = new Failure();
 			f.setInfo("Fridge " + fridgeId + " already closed");
+			throw f;
+		}else if(this.manager.structure.getFridgeStatus().userid != userId){
+			Failure f = new Failure();
+			f.setInfo("Fridge " + fridgeId + " opened by user " + this.manager.structure.getFridgeStatus().userid + ", not user " + userId);
 			throw f;
 		}else{
 			this.manager.structure.closeFridge(fridgeId);
@@ -140,7 +162,7 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	}
 
 	@Override
-	public FridgeStatus fridgeStatus(int fridgeId) throws AvroRemoteException {
+	public FridgeStatus fridgeStatus(int fridgeId) throws AvroRemoteException, Failure {
 		FridgeStatus status = new FridgeStatus();
 		
 		structures.FridgeStatus s = this.manager.structure.getFridgeStatus();
@@ -149,6 +171,11 @@ public class ControllerServer extends Server implements protocols.controller.Con
 		status.setUserid(s.userid);
 		
 		return status;
+	}
+
+	@Override
+	public List<CharSequence> getFridgeItems(int fridgeId) throws AvroRemoteException, Failure {
+		return this.manager.getFridgeItems(fridgeId);
 	}
 
 }

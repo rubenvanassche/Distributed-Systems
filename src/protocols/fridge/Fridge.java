@@ -8,25 +8,19 @@ package protocols.fridge;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Fridge {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[],\"messages\":{\"ping\":{\"request\":[],\"response\":\"boolean\"},\"getItems\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"string\"}},\"removeItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"boolean\"},\"addItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"boolean\"},\"openFridge\":{\"request\":[{\"name\":\"userId\",\"type\":\"int\"}],\"response\":\"null\"},\"closeFridge\":{\"request\":[],\"response\":\"null\"}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[{\"type\":\"error\",\"name\":\"Failure\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"info\",\"type\":\"string\"}]}],\"messages\":{\"ping\":{\"request\":[],\"response\":\"boolean\"},\"getItems\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"string\"},\"errors\":[\"Failure\"]},\"removeItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"null\",\"errors\":[\"Failure\"]},\"addItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"null\",\"errors\":[\"Failure\"]}}}");
   /**
    */
   boolean ping() throws org.apache.avro.AvroRemoteException;
   /**
    */
-  java.util.List<java.lang.CharSequence> getItems() throws org.apache.avro.AvroRemoteException;
+  java.util.List<java.lang.CharSequence> getItems() throws org.apache.avro.AvroRemoteException, protocols.fridge.Failure;
   /**
    */
-  boolean removeItem(java.lang.CharSequence item) throws org.apache.avro.AvroRemoteException;
+  java.lang.Void removeItem(java.lang.CharSequence item) throws org.apache.avro.AvroRemoteException, protocols.fridge.Failure;
   /**
    */
-  boolean addItem(java.lang.CharSequence item) throws org.apache.avro.AvroRemoteException;
-  /**
-   */
-  java.lang.Void openFridge(int userId) throws org.apache.avro.AvroRemoteException;
-  /**
-   */
-  java.lang.Void closeFridge() throws org.apache.avro.AvroRemoteException;
+  java.lang.Void addItem(java.lang.CharSequence item) throws org.apache.avro.AvroRemoteException, protocols.fridge.Failure;
 
   @SuppressWarnings("all")
   public interface Callback extends Fridge {
@@ -42,18 +36,10 @@ public interface Fridge {
     /**
      * @throws java.io.IOException The async call could not be completed.
      */
-    void removeItem(java.lang.CharSequence item, org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
+    void removeItem(java.lang.CharSequence item, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
     /**
      * @throws java.io.IOException The async call could not be completed.
      */
-    void addItem(java.lang.CharSequence item, org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
-    /**
-     * @throws java.io.IOException The async call could not be completed.
-     */
-    void openFridge(int userId, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
-    /**
-     * @throws java.io.IOException The async call could not be completed.
-     */
-    void closeFridge(org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
+    void addItem(java.lang.CharSequence item, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
   }
 }

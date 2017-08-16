@@ -14,8 +14,6 @@ public class Entity {
 	public int id;
 	public Type type;
 	
-	public Boolean online;
-	
 	// Get an device which can be send over the avro protocol
 	public protocols.controller.Device getProtocolDevice(){
 		protocols.controller.Device device = new protocols.controller.Device();

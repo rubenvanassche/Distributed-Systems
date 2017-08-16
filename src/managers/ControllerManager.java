@@ -26,16 +26,18 @@ import protocols.fridge.Fridge;
 import protocols.light.Light;
 import protocols.sensor.Sensor;
 import protocols.user.User;
-
+import structures.Entity;
+import structures.TemperatureHistory;
 import structures.Entity.Type;
+import structures.FridgeStatus;
 
 
 public class ControllerManager extends Manager {
 	public structures.Controller structure; // Structure
-	Map<Integer, Fridge> fridgeProxies = new HashMap<Integer, Fridge>(); // RPC connection to fridges
-	Map<Integer, Light> lightProxies = new HashMap<Integer, Light>(); // RPC connection to lights
-	Map<Integer, Sensor> sensorProxies = new HashMap<Integer, Sensor>(); // RPC connection to sensors
-	Map<Integer, User> userProxies = new HashMap<Integer, User>(); // RPC connection to users
+	public Map<Integer, Fridge> fridgeProxies = new HashMap<Integer, Fridge>(); // RPC connection to fridges
+	public Map<Integer, Light> lightProxies = new HashMap<Integer, Light>(); // RPC connection to lights
+	public Map<Integer, Sensor> sensorProxies = new HashMap<Integer, Sensor>(); // RPC connection to sensors
+	public Map<Integer, User> userProxies = new HashMap<Integer, User>(); // RPC connection to users
 	
 
 	public ControllerManager(structures.Controller controller, Server server) {
@@ -92,13 +94,6 @@ public class ControllerManager extends Manager {
 				}
 			} catch (AvroRemoteException e) {
 				System.out.println("Light ID: " + id  + " - data unavailable");
-				
-				// Set device offline
-				try {
-					this.structure.setDeviceOffline(id, Type.LIGHT);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
 			}
         }
     }
@@ -163,13 +158,6 @@ public class ControllerManager extends Manager {
 				System.out.println("Sensor ID: " + id + " - " + entry.getValue().getTemperature());
 			} catch (AvroRemoteException e) {
 				System.out.println("Sensor ID: " + id + " - data unavailable");
-				
-				// Set device offline
-				try {
-					this.structure.setDeviceOffline(id, Type.SENSOR);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
 			}
         }
     }
@@ -190,13 +178,6 @@ public class ControllerManager extends Manager {
 			System.out.println("Sensor ID: " + id  + " " + sensor.getTemperature());
 		} catch (AvroRemoteException e) {
 			System.out.println("Sensor ID: " + id  + " is offline, last measurement: " + this.structure.getLastTemperature(id));
-			
-			// Set device offline
-			try {
-				this.structure.setDeviceOffline(id, Type.SENSOR);
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
 		}
     }
 	
@@ -224,9 +205,7 @@ public class ControllerManager extends Manager {
 			}
     }
 	
-	public void userEnters(int id){
-		this.structure.users.get(id).online = true;
-		
+	public void userEnters(int id){		
 		// Send information to the other users
 		for(Entry<Integer, User> entry : this.userProxies.entrySet()){
 			if(entry.getKey() == id){
@@ -237,13 +216,7 @@ public class ControllerManager extends Manager {
 			try {
 				entry.getValue().message("[INFO] User " + id + " has entered the house.");
 			} catch (AvroRemoteException e) {
-				// Set device offline
-				try {
-					this.structure.setDeviceOnline(id, Type.USER);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
-				
+				// User is offline
 			}
 		}
 		
@@ -254,9 +227,7 @@ public class ControllerManager extends Manager {
 		}
 	}
     
-	public void userLeave(int id){
-		this.structure.users.get(id).online = false;
-		
+	public void userLeave(int id){		
 		// Send information to the other users
 		for(Entry<Integer, User> entry : this.userProxies.entrySet()){
 			if(entry.getKey() == id){
@@ -267,13 +238,7 @@ public class ControllerManager extends Manager {
 			try {
 				entry.getValue().message("[INFO] User " + id + " has left the house.");
 			} catch (AvroRemoteException e) {
-				// Set device offline
-				try {
-					this.structure.setDeviceOffline(id, Type.USER);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
-				
+				// User is offline		
 			}
 		}
 		
@@ -298,13 +263,6 @@ public class ControllerManager extends Manager {
 				status.setOnline(false);
 			}
 			
-			// Set device status in the controller structure
-			try {
-				this.structure.setDeviceStatus(entry.getKey(), Type.FRIDGE, status.getOnline());
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
-			
 			devices.add(status);
 		}
 		
@@ -317,13 +275,6 @@ public class ControllerManager extends Manager {
 			} catch (AvroRemoteException e) {
 				// device is not online
 				status.setOnline(false);
-			}
-			
-			// Set device status in the controller structure
-			try {
-				this.structure.setDeviceStatus(entry.getKey(), Type.LIGHT, status.getOnline());
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
 			}
 			
 			devices.add(status);
@@ -340,13 +291,6 @@ public class ControllerManager extends Manager {
 				status.setOnline(false);
 			}
 			
-			// Set device status in the controller structure
-			try {
-				this.structure.setDeviceStatus(entry.getKey(), Type.SENSOR, status.getOnline());
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
-			
 			devices.add(status);
 		}
 		
@@ -360,13 +304,6 @@ public class ControllerManager extends Manager {
 			} catch (AvroRemoteException e) {
 				// device is not online
 				status.setOnline(false);
-			}
-			
-			// Set device status in the controller structure
-			try {
-				this.structure.setDeviceStatus(entry.getKey(), Type.USER, status.getOnline());
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
 			}
 			
 			
@@ -385,13 +322,6 @@ public class ControllerManager extends Manager {
 				System.out.println("Fridge ID: " + id);
 			} catch (AvroRemoteException e) {
 				System.out.println("Fridge ID: " + id + " - data unavailable");
-				
-				// Set device offline
-				try {
-					this.structure.setDeviceOffline(id, Type.FRIDGE);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
 			}
         }
     }
@@ -410,13 +340,6 @@ public class ControllerManager extends Manager {
         		}
 			} catch (AvroRemoteException e) {
 				System.out.println("User ID: " + id + " - data unavailable");
-				
-				// Set device offline
-				try {
-					this.structure.setDeviceOffline(id, Type.FRIDGE);
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
 			}
         }
     }
@@ -513,5 +436,82 @@ public class ControllerManager extends Manager {
 		return count;
 	}
 
+	public List<CharSequence> getFridgeItems(int fridgeId) throws Failure{
+		List<CharSequence> out = null;
+		
+		if(this.fridgeProxies.containsKey(fridgeId) == false){
+			Failure f = new Failure();
+			f.setInfo("Fridge ID: " + fridgeId  + " is does not exists");
+			throw f;
+		}
+		
+		try {
+			out = this.fridgeProxies.get(fridgeId).getItems();
+		} catch (AvroRemoteException e) {
+			// TODO Auto-generated catch block
+			Failure f = new Failure();
+			f.setInfo("Fridge ID: " + fridgeId  + " is offline");
+			throw f;
+		}
+		
+		return out;
+	}
+	
+	@Command(description="Get information about the replication of data")
+	public void replicationInfo(){
+		System.out.println("Entities");
+		System.out.println("--------");
+		for(Entry<Integer, Entity> entity : this.structure.fridges.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: fridge, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		for(Entry<Integer, Entity> entity : this.structure.lights.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: light, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		for(Entry<Integer, Entity> entity : this.structure.sensors.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: sensor, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		for(Entry<Integer, Entity> entity : this.structure.users.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: user, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		System.out.println("Temperature History");
+		System.out.println("-------------------");
+		for(Entry<Integer, TemperatureHistory> entry : this.structure.temperatures.entrySet()){
+			TemperatureHistory t = entry.getValue();
+			LinkedList<Double> temperatures = this.structure.getLastTemperatures(t.deviceID);
+			String temperaturesString = "";
+			
+			for(Double temperature : temperatures){
+				temperaturesString += String.valueOf(temperature) + ", ";
+			}
+			
+			System.out.println("Sensorid: " + t.deviceID + ", temperatures: " + temperaturesString);
+		}
+		System.out.println("Light Status");
+		System.out.println("------------");
+		for(LightStatus status : this.structure.lightStatus){
+			if(status.getState() == true){
+				System.out.println("LightId :" + status.getId() + ", status : on");
+			}else{
+				System.out.println("LightId :" + status.getId() + ", status : off");
+			}
+		}
+		System.out.println("Open Fridges");
+		System.out.println("------------");
+		for(Entry<Integer, FridgeStatus> entry : this.structure.openFridges.entrySet()){
+			FridgeStatus status = entry.getValue();
+			if(status.open == true){
+				System.out.println("fridgeId: " + status.id + ", userId: " + status.userid + ", opened");
+			}else{
+				System.out.println("fridgeId: " + status.id + ", userId: " + status.userid + ", closed");
+			}
+		}
+		System.out.println("Amount Of Measurements");
+		System.out.println("----------------------");
+		System.out.println(this.structure.amountOfMeasurements);
+	}
 	
 }

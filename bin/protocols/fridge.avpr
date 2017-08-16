@@ -1,6 +1,11 @@
 { 
 	"namespace": "protocols.fridge", 
 	"protocol" : "Fridge",
+	"types": [
+		{"name": "Failure", "type": "error", "doc" : "Failure", "fields": [
+			{"name": "info", "type": "string"}
+		]}
+	],
 	"messages" : {
 		"ping" : {
 			"request" : [],
@@ -8,23 +13,18 @@
 		},
 		"getItems" : {
 			"request" : [],
-			"response" : {"type": "array", "items": "string"}
+			"response" : {"type": "array", "items": "string"},
+			"errors": ["Failure"]
 		},
 		"removeItem" : {
 			"request" : [{"name" : "item", "type" : "string"}],
-			"response" : "boolean"
+			"response" : "null",
+			"errors": ["Failure"]
 		},
 		"addItem" : {
 			"request" : [{"name" : "item", "type" : "string"}],
-			"response" : "boolean"
-		},
-		"openFridge" : {
-			"request" : [{"name" : "userId", "type" : "int"}],
-			"response" : "null"
-		},
-		"closeFridge" : {
-			"request" : [],
-			"response" : "null"
+			"response" : "null",
+			"errors": ["Failure"]
 		}
 	}
 }

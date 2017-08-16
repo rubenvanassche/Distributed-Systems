@@ -2,6 +2,8 @@ package structures;
 
 import java.util.Vector;
 
+import protocols.controller.Failure;
+
 public class Fridge extends Device {
 	public Vector<String> contents = new Vector<String>();
 	
@@ -10,7 +12,7 @@ public class Fridge extends Device {
 	public Boolean isBackup = false;
 	
 	// Add an item to the fridge, if the item already in the fridge an item number will be added
-	public Boolean addItem(String item){
+	public void addItem(String item){
 		int counter = 0;
 		String suffix = "";
 		
@@ -23,17 +25,16 @@ public class Fridge extends Device {
 				suffix = String.valueOf(counter);
 			}
 		}
-		
-		return true;
 	}
 	
 	// Remove an item from the fridge
-	public Boolean removeItem(String item){
+	public void removeItem(String item) throws Failure{
 		if(!this.contents.contains(item)){
-			return false;
+			Failure f = new Failure();
+			f.setInfo("Fridge does not contain item " + item);
+			throw f;
 		}
 		
 		this.contents.remove(item);
-		return true;
 	}
 }

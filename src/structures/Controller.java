@@ -151,29 +151,6 @@ public class Controller extends Device{
 		return output;
 	}
 	
-	// Set the boolean of the onliness device offline
-	public void setDeviceOffline(int id, Type type) throws Exception{
-		this.setDeviceStatus(id, type, false);
-	}
-	
-	// Set the boolean of the onliness device online
-	public void setDeviceOnline(int id, Type type) throws Exception{
-		this.setDeviceStatus(id, type, true);
-	}
-	
-	public void setDeviceStatus(int id, Type type, Boolean status) throws Exception{
-		if(type.equals(Type.FRIDGE)){
-			this.fridges.get(id).online = status;
-		}else if(type.equals(Type.LIGHT)){
-			this.lights.get(id).online = status;
-		}else if(type.equals(Type.SENSOR)){
-			this.sensors.get(id).online = status;
-		}else if(type.equals(Type.USER)){
-			this.users.get(id).online = status;
-		}else{
-			throw new Exception("[ERROR]Unknown device type!");
-		}
-	}
 
 	// Checks whether the house is empty and light statusses are saved
 	public Boolean isLightStatusSaved(){
@@ -205,7 +182,7 @@ public class Controller extends Device{
 			throw f;
 		}
 		
-		this.openFridges.get(id).open = true;
+		this.openFridges.get(id).open = false;
 		this.openFridges.get(id).userid = 0;
 		return true;
 	}

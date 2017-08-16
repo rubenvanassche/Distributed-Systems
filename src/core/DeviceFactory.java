@@ -27,7 +27,6 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.CONTROLLER;
-		d.online = true;
 		
 		return d;
 	}
@@ -41,7 +40,6 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.FRIDGE;
-		d.online = true;
 		
 		return d;		
 	}
@@ -55,7 +53,6 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.LIGHT;
-		d.online = true;
 		
 		return d;
 	}
@@ -69,7 +66,6 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.SENSOR;
-		d.online = true;
 		
 		return d;
 	}
@@ -83,7 +79,6 @@ public class DeviceFactory {
 		d.ipAdress = ipAddress;
 		d.port = port;
 		d.type = Type.USER;
-		d.online = true;
 		
 		return d;
 	}

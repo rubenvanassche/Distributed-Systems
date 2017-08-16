@@ -1,0 +1,74 @@
+{
+	"namespace": "protocols.replication",
+	"protocol" : "Replication",
+	"types": [
+		{"name": "Entity", "type": "record", "doc" : "Device info for the network", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "ipadress", "type": "string"},
+			{"name": "port", "type": "int"},
+			{"name": "type", "type": "string"}
+		]},
+		{"name": "TemperatureHistory", "type": "record", "doc" : "Temperature measured by a sensor", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "temperatures", "type": {"type" : "array", "items" : "double"}}
+		]},
+		{"name": "LightStatus", "type": "record", "doc" : "Status of all the lights", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "state", "type": "boolean"}
+		]},
+		{"name": "FridgeStatus", "type": "record", "doc" : "Information about the fridges opened", "fields": [
+			{"name": "fridgeId", "type": "int"},
+			{"name": "userId", "type": "int"},
+			{"name": "open", "type": "boolean"}
+		]},
+		{"name": "Controller", "type": "record", "doc" : "Initial structure to be send for replication", "fields": [
+			{"name": "controllerEntity", "type": "Entity"},
+			{"name": "entities", "type": {"type" : "array", "items" : "Entity"}},
+			{"name": "temperatureHistories", "type": {"type" : "array", "items" : "TemperatureHistory"}},
+			{"name": "lightStatusses", "type": {"type" : "array", "items" : "LightStatus"}},
+			{"name": "openFridges", "type": {"type" : "array", "items" : "FridgeStatus"}},
+			{"name": "amountOfMeasurements", "type": "int"}
+		]},
+		{"name": "Failure", "type": "error", "doc" : "Failure", "fields": [
+			{"name": "info", "type": "string"}
+		]}
+	],
+	"messages" : {
+		"setup" : {
+			"request" : [{"name" : "controller", "type" : "Controller"}],
+			"response" : "null",
+			"doc" : "Initial replication, sending all entities available at the moment",
+			"errors": ["Failure"]
+		},
+		"registerEntity" : {
+			"request" : [{"name" : "entity", "type": "Entity"}],
+			"response" : "null",
+			"doc" : "Each time a new entity gets registered in the controller, this method will be called",
+			"errors": ["Failure"]
+		},
+		"addTemperatureHistory" : {
+			"request" : [{"name" : "temperatureHistory", "type": "TemperatureHistory"}],
+			"response" : "null",
+			"doc" : "Each time a new temperature history registered in the controller, this method will be called",
+			"errors": ["Failure"]
+		},
+		"updateLightStatus" : {
+			"request" : [{"name": "lightStatusses", "type": {"type" : "array", "items" : "LightStatus"}}],
+			"response" : "null",
+			"doc" : "Each time the light status gets updated in the controller, this method will be called",
+			"errors": ["Failure"]
+		},
+		"openFridge" : {
+			"request" : [{"name": "data", "type": "FridgeStatus"}],
+			"response" : "null",
+			"doc" : "Each time a fridge gets opened, this method will be called",
+			"errors": ["Failure"]
+		},
+		"closeFridge" : {
+			"request" : [{"name": "data", "type": "FridgeStatus"}],
+			"response" : "null",
+			"doc" : "Each time a fridge gets opened, this method will be called",
+			"errors": ["Failure"]
+		}
+	}
+}
