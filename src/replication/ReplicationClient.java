@@ -59,5 +59,53 @@ public class ReplicationClient {
 			System.err.println("[ERROR] Couldn't execute an initial handschake");
 		}
 	}
+	
+	public void registerEntity(structures.Entity e){
+		protocols.replication.Entity entity = this.convertor.convert(e);
+		
+		for(Replication replicator : this.replicators){
+			try {
+				replicator.registerEntity(entity);
+			} catch (AvroRemoteException ex) {
+				System.err.println("[ERROR] Couldn't register entity for replication");
+			}
+		}
+	}
+	
+	public void addTemperatureHistory(structures.TemperatureHistory th){
+		protocols.replication.TemperatureHistory temperatureHistory = this.convertor.convert(th);
+		
+		for(Replication replicator : this.replicators){
+			try {
+				replicator.addTemperatureHistory(temperatureHistory);
+			} catch (AvroRemoteException ex) {
+				System.err.println("[ERROR] Couldn't register temperature history for replication");
+			}
+		}
+	}
+	
+	public void updateLightStatus(List<protocols.controller.LightStatus> ls){
+		List<protocols.replication.LightStatus> lightstatusses = this.convertor.convert(ls);
+		
+		for(Replication replicator : this.replicators){
+			try {
+				replicator.updateLightStatus(lightstatusses);
+			} catch (AvroRemoteException ex) {
+				System.err.println("[ERROR] Couldn't register light statusses update for replication");
+			}
+		}
+	}
+	
+	public void updateFridge(structures.FridgeStatus fs){
+		protocols.replication.FridgeStatus fridgeStatus = this.convertor.convert(fs);
+		
+		for(Replication replicator : this.replicators){
+			try {
+				replicator.updateFridge(fridgeStatus);
+			} catch (AvroRemoteException ex) {
+				System.err.println("[ERROR] Couldn't register fridge status update for replication");
+			}
+		}
+	}
 
 }

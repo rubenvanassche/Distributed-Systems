@@ -12,6 +12,7 @@ import protocols.controller.FridgeStatus;
 import protocols.controller.LightStatus;
 import structures.Controller;
 import structures.Entity;
+import structures.TemperatureHistory;
 
 public class ControllerServer extends Server implements protocols.controller.Controller {
 	public Controller controller;
@@ -44,7 +45,10 @@ public class ControllerServer extends Server implements protocols.controller.Con
 
 	@Override
 	public boolean updateTemperature(int id, double value) throws AvroRemoteException, Failure {
-		this.manager.structure.updateTemperature(id, value);
+		TemperatureHistory th = this.manager.structure.updateTemperature(id, value);
+		
+		// For replication purpose
+		this.manager.replication.addTemperatureHistory(th);
 		
 		return true;
 	}
@@ -123,6 +127,9 @@ public class ControllerServer extends Server implements protocols.controller.Con
 		}else{
 			this.manager.structure.openFridge(fridgeId, userId);
 			
+			// Replication purposes
+			this.manager.replication.updateFridge(this.manager.structure.openFridges.get(fridgeId));
+			
 			// Send information for direct RPC between Fridge and User
 			Entity fridgeEntity = this.manager.structure.fridges.get(fridgeId);
 			return fridgeEntity.getProtocolDevice();
@@ -156,6 +163,9 @@ public class ControllerServer extends Server implements protocols.controller.Con
 			throw f;
 		}else{
 			this.manager.structure.closeFridge(fridgeId);
+			
+			// Replication purposes
+			this.manager.replication.updateFridge(this.manager.structure.openFridges.get(fridgeId));
 		}
 		
 		return null;

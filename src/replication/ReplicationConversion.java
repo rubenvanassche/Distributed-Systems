@@ -39,6 +39,15 @@ public class ReplicationConversion {
 		return status;
 	}
 	
+	public List<protocols.replication.LightStatus> convert(List<protocols.controller.LightStatus> ls){
+		List<protocols.replication.LightStatus> lightStatusses = new LinkedList<protocols.replication.LightStatus>();
+		for(LightStatus entry : ls){
+			lightStatusses.add(this.convert(entry));
+		}
+		
+		return lightStatusses;
+	}
+	
 	public protocols.replication.FridgeStatus convert(structures.FridgeStatus fs){
 		protocols.replication.FridgeStatus status = new protocols.replication.FridgeStatus();
 		
@@ -79,11 +88,7 @@ public class ReplicationConversion {
 		controller.setTemperatureHistories(temperatureHistories);
 		
 		// Light Statusses
-		List<protocols.replication.LightStatus> lightStatusses = new LinkedList<protocols.replication.LightStatus>();
-		for(LightStatus entry : c.lightStatus){
-			lightStatusses.add(this.convert(entry));
-		}
-		controller.setLightStatusses(lightStatusses);
+		controller.setLightStatusses(this.convert(c.lightStatus));
 		
 		// Open Fridges
 		List<protocols.replication.FridgeStatus> openFridges = new LinkedList<protocols.replication.FridgeStatus>();

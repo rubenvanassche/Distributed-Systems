@@ -58,7 +58,7 @@ public class Controller extends Device{
 	}
 	
 	// Update the temperature in the controller 
-	public void updateTemperature(int id, double temperature) throws Failure{
+	public TemperatureHistory updateTemperature(int id, double temperature) throws Failure{
 		if(sensors.containsKey(id) == false){
 			Failure f = new Failure();
 			f.setInfo("[ERROR] trying to update a sensor which ID doens't exists");
@@ -76,6 +76,8 @@ public class Controller extends Device{
 		
 		// Add the previous temperature to history
 		temperatures.get(id).addTemperature(temperature);
+		
+		return temperatures.get(id);
 	}
 	
 	// Get the last temperature of a specific sensor

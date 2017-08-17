@@ -40,7 +40,7 @@ public class ControllerManager extends Manager {
 	public Map<Integer, Light> lightProxies = new HashMap<Integer, Light>(); // RPC connection to lights
 	public Map<Integer, Sensor> sensorProxies = new HashMap<Integer, Sensor>(); // RPC connection to sensors
 	public Map<Integer, User> userProxies = new HashMap<Integer, User>(); // RPC connection to users
-	ReplicationClient replication = null;
+	public ReplicationClient replication = null;
 
 	public ControllerManager(structures.Controller controller, Server server) {
 		super(server);
@@ -82,7 +82,12 @@ public class ControllerManager extends Manager {
 				System.err.println("[Error] Trying to create a proxy for the controller to an unknown type.");
 				System.exit(1);
 			}
-		
+			
+			// Register the device for replication purposes
+			Entity entity = new Entity();
+			entity.getInfoFromProtocolDevice(device);
+			this.replication.registerEntity(entity);
+			
 		}catch(IOException e){
 			System.err.println("[Error] Connecting to server");
 			e.printStackTrace(System.err);
@@ -392,6 +397,9 @@ public class ControllerManager extends Manager {
 	// Save the configuration of the lights to the structure
 	public void saveLightStatus(){
 		this.structure.lightStatus = this.lightStatus();
+		
+		// for replication purposes
+		this.replication.updateLightStatus(this.structure.lightStatus);
 	}
 	
 	// restore the configuration of the lights to to all the lights
@@ -407,9 +415,12 @@ public class ControllerManager extends Manager {
 			} catch (AvroRemoteException e){
 				// device not online
 				continue;
-			}
-			
+			}	
 		}
+		
+		this.lightStatus().clear(); // Remove all statusses for next time
+		// For replication purposes
+		this.replication.updateLightStatus(this.structure.lightStatus);
 	}
 	
 	// Poweroff all the lights
