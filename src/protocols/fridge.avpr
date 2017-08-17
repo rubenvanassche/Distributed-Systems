@@ -25,6 +25,14 @@
 			"request" : [{"name" : "item", "type" : "string"}],
 			"response" : "null",
 			"errors": ["Failure"]
+		},
+		"reRegister" : {
+			"request" : [
+				{"name": "ipadress", "type": "string"},
+				{"name": "port", "type": "int"}
+			],
+			"doc" : "When a controller goes down, the new controller calls this method to let the devices know ther is a new controller",
+			"response" : "null"
 		}
 	}
 }

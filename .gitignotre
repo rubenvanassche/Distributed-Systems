@@ -1,7 +1,0 @@
-bin/**/*
-src/protocols/controller
-src/protocols/fridge
-src/protocols/light
-src/protocols/replication
-src/protocols/sensor
-src/protocols/user

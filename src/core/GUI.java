@@ -2,17 +2,20 @@ package core;
 
 import managers.*;
 import structures.Entity.Type;
+import asg.cliche.CLIException;
+import asg.cliche.Shell;
 import asg.cliche.ShellFactory;
 import java.io.IOException;
+import java.util.Scanner;
 
-public class GUI implements Runnable {
+public class GUI extends Thread {
 	public Manager manager;
+	private Boolean keepRunning = true;
 	
 	public GUI(Manager m){
 		this.manager = m;
 	}
 
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		
@@ -27,11 +30,23 @@ public class GUI implements Runnable {
 		}
 		
 		
-		try {
-			ShellFactory.createConsoleShell(name, "", this.manager).commandLoop();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println(e.getMessage());
+		Shell s = ShellFactory.createConsoleShell(name, "", this.manager);
+		Scanner scanner = new Scanner(System.in);
+		while(this.keepRunning){
+			try{
+				System.out.print(name + ">" );
+				String input = scanner.nextLine();
+				s.processLine(input);
+			}catch (CLIException e) {
+				System.err.println(e.getMessage());
+			}
 		}
+		
+		System.out.println("Closing down " + name);
 	}
+	
+	public void quit(){
+		this.keepRunning = false;
+	}
+	
 }

@@ -33,6 +33,11 @@ public class ControllerServer extends Server implements protocols.controller.Con
 			this.manager.AddProxy(device);
 			// Add information about the device to the controller structure
 			this.manager.structure.registerDevice(device);
+			
+			// Replication purposes
+			if(device.getType().toString().equals("FRIDGE")){
+				this.manager.replication.updateFridge(this.controller.openFridges.get(device.getId()));
+			}
 		}catch (Exception e) {
 			// TODO: handle exception
 			System.err.println("[Error] Error in registering device with controller, no manager set");
@@ -105,7 +110,7 @@ public class ControllerServer extends Server implements protocols.controller.Con
 
 	@Override
 	public Device openFridge(int fridgeId, int userId) throws AvroRemoteException, Failure {
-		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
+		if(this.manager.structure.fridges.containsKey(fridgeId) == false || this.manager.fridgeProxies.containsKey(fridgeId) == false){
 			Failure f = new Failure();
 			f.setInfo("Fridge " + fridgeId + " does not exists");
 			throw f;
@@ -120,9 +125,10 @@ public class ControllerServer extends Server implements protocols.controller.Con
 			throw f;
 		}
 		
-		if(this.manager.structure.getFridgeStatus().open == true){
+		structures.FridgeStatus fs = this.manager.structure.getFridgeStatus(fridgeId);
+		if(fs.open == true){
 			Failure f = new Failure();
-			f.setInfo("Fridge " + fridgeId + " already opened by user " + this.manager.structure.getFridgeStatus().userid);
+			f.setInfo("Fridge " + fridgeId + " already opened by user " + this.manager.structure.getFridgeStatus(fridgeId).userid);
 			throw f;
 		}else{
 			this.manager.structure.openFridge(fridgeId, userId);
@@ -138,7 +144,7 @@ public class ControllerServer extends Server implements protocols.controller.Con
 
 	@Override
 	public Void closeFridge(int fridgeId, int userId) throws AvroRemoteException, Failure {
-		if(this.manager.structure.fridges.containsKey(fridgeId) == false){
+		if(this.manager.structure.fridges.containsKey(fridgeId) == false || this.manager.fridgeProxies.containsKey(fridgeId) == false){
 			Failure f = new Failure();
 			f.setInfo("Fridge " + fridgeId + " does not exists");
 			throw f;
@@ -153,13 +159,13 @@ public class ControllerServer extends Server implements protocols.controller.Con
 			throw f;
 		}
 		
-		if(this.manager.structure.getFridgeStatus().open == false){
+		if(this.manager.structure.getFridgeStatus(fridgeId).open == false){
 			Failure f = new Failure();
 			f.setInfo("Fridge " + fridgeId + " already closed");
 			throw f;
-		}else if(this.manager.structure.getFridgeStatus().userid != userId){
+		}else if(this.manager.structure.getFridgeStatus(fridgeId).userid != userId){
 			Failure f = new Failure();
-			f.setInfo("Fridge " + fridgeId + " opened by user " + this.manager.structure.getFridgeStatus().userid + ", not user " + userId);
+			f.setInfo("Fridge " + fridgeId + " opened by user " + this.manager.structure.getFridgeStatus(fridgeId).userid + ", not user " + userId);
 			throw f;
 		}else{
 			this.manager.structure.closeFridge(fridgeId);
@@ -175,7 +181,7 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	public FridgeStatus fridgeStatus(int fridgeId) throws AvroRemoteException, Failure {
 		FridgeStatus status = new FridgeStatus();
 		
-		structures.FridgeStatus s = this.manager.structure.getFridgeStatus();
+		structures.FridgeStatus s = this.manager.structure.getFridgeStatus(fridgeId);
 		status.setId(s.id);
 		status.setOpened(s.open);
 		status.setUserid(s.userid);

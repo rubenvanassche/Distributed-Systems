@@ -43,6 +43,8 @@ public class Controller extends Device{
 		
 		if(type.equals(Type.FRIDGE)){
 			this.fridges.put(device.getId(), entity);
+			
+			// Create a Fridgestatus
 			this.openFridges.put(device.getId(), new FridgeStatus(device.getId()));
 		}else if(type.equals(Type.LIGHT)){
 			this.lights.put(device.getId(), entity);
@@ -165,33 +167,33 @@ public class Controller extends Device{
 	
 	// Open a fridge
 	public Boolean openFridge(int fridgeId, int userId) throws Failure{
-		if(this.openFridges.get(id).open == true){
+		if(this.openFridges.get(fridgeId).open == true){
 			Failure f = new Failure();
 			f.setInfo("Fridge already opened");
 			throw f;
 		}
 		
-		this.openFridges.get(id).open = true;
-		this.openFridges.get(id).userid = userId;
+		this.openFridges.get(fridgeId).open = true;
+		this.openFridges.get(fridgeId).userid = userId;
 		return true;
 	}
 	
 	// Close a fridge
-	public Boolean closeFridge(int id) throws Failure{
-		if(this.openFridges.get(id).open == false){
+	public Boolean closeFridge(int fridgeId) throws Failure{
+		if(this.openFridges.get(fridgeId).open == false){
 			Failure f = new Failure();
 			f.setInfo("Fridge already closed");
 			throw f;
 		}
 		
-		this.openFridges.get(id).open = false;
-		this.openFridges.get(id).userid = 0;
+		this.openFridges.get(fridgeId).open = false;
+		this.openFridges.get(fridgeId).userid = 0;
 		return true;
 	}
 	
 	// Get the fridge status
-	public FridgeStatus getFridgeStatus(){
-		return this.openFridges.get(id);
+	public FridgeStatus getFridgeStatus(int fridgeId){
+		return this.openFridges.get(fridgeId);
 	}
 	
 	// Print information for replication purposes

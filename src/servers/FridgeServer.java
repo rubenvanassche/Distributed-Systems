@@ -54,5 +54,13 @@ public class FridgeServer extends Server implements protocols.fridge.Fridge  {
 		return null;
 	}
 
+	@Override
+	public Void reRegister(CharSequence ipadress, int port) throws AvroRemoteException {
+		// Change the connection to the controller
+		this.manager.reRegister(ipadress.toString(), port);
+		
+		return null;
+	}
+
 
 }

@@ -69,6 +69,7 @@ public class ManagerFactory {
 		Server server = createServer(deviceServer, protocols.light.Light.class);
 		
 		LightManager manager = new LightManager(device, server);
+		deviceServer.manager = manager;
 		return manager;
 	}
 	
@@ -78,6 +79,7 @@ public class ManagerFactory {
 		Server server = createServer(deviceServer, protocols.sensor.Sensor.class);
 		
 		SensorManager manager = new SensorManager(device, server);
+		deviceServer.manager = manager;
 		return manager;
 	}
 	
@@ -87,6 +89,7 @@ public class ManagerFactory {
 		Server server = createServer(deviceServer, protocols.user.User.class);
 		
 		UserManager manager = new UserManager(device, server);
+		deviceServer.manager = manager;
 		return manager;
 	}
 }

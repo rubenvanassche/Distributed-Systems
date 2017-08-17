@@ -2,11 +2,13 @@ package servers;
 
 import org.apache.avro.AvroRemoteException;
 
+import managers.LightManager;
 import structures.Device;
 import structures.Light;
 
 public class LightServer extends Server implements protocols.light.Light {
 	public Light light;
+	public LightManager manager;
 	
 	public LightServer(Device d) {
 		super(d);
@@ -33,5 +35,13 @@ public class LightServer extends Server implements protocols.light.Light {
 	@Override
 	public boolean ping() throws AvroRemoteException {
 		return true;
+	}
+	
+	@Override
+	public Void reRegister(CharSequence ipadress, int port) throws AvroRemoteException {
+		// Change the connection to the controller
+		this.manager.reRegister(ipadress.toString(), port);
+		
+		return null;
 	}
 }

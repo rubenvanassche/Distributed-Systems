@@ -3,11 +3,13 @@ package managers;
 import org.apache.avro.ipc.Server;
 
 import asg.cliche.Command;
+import core.GUI;
 import structures.Entity.Type;
 
-public class Manager {
+public class Manager implements Runnable {
 	public Server server;
 	public Type type;
+	private GUI thread = null;
 	
 	Manager(Server fserver){
 		this.server = fserver;
@@ -16,9 +18,14 @@ public class Manager {
 	@Command(description="Stops the execution of the device")
     public void shutdown() {
         this.server.close();
+        this.thread.quit();
     }
-
+	
+	@Override
 	public void run() {
+		thread = new GUI(this);
+		thread.start();
+		
 		this.server.start();
 		
 		try{

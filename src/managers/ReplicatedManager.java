@@ -4,17 +4,28 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Map.Entry;
 
 import org.apache.avro.ipc.SaslSocketServer;
+import org.apache.avro.ipc.SaslSocketTransceiver;
 import org.apache.avro.ipc.Server;
+import org.apache.avro.ipc.Transceiver;
+import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.apache.avro.ipc.specific.SpecificResponder;
 
 import asg.cliche.Command;
+import avro.hello.proto.Hello;
 import core.DeviceFactory;
+import core.GUI;
 import core.ManagerFactory;
+import protocols.fridge.Fridge;
+import protocols.light.Light;
+import protocols.sensor.Sensor;
+import protocols.user.User;
 import replication.ReplicationServer;
 import structures.Controller;
 import structures.Device;
+import structures.Entity;
 
 public class ReplicatedManager extends ControlledManager {
 	Controller backupController;
@@ -69,12 +80,76 @@ public class ReplicatedManager extends ControlledManager {
 	@Command()
 	public void startBackupController(){
 		// Stop current device server
-		this.server.close();
+		this.shutdown();
 		
 		// Create the new backup controller server
 		ManagerFactory mf = new ManagerFactory(null); // we dont use this feature
 		this.backupControllerManager = mf.createControllerManager(0, this.backupController);
-		this.backupControllerManager.run();
+		Thread t = new Thread(this.backupControllerManager);
+		t.start();
+		
+		// Stop the replication sever
+		this.replicationServer.close();
+		
+        
+        // Reregister all devices
+        for(Entry<Integer, Entity> entry : this.backupController.fridges.entrySet()){
+        	// Check if the original type of this device is a fridge, if it has the same id, don't try to reconnect
+        	if(this.structure.type.toString().equals("FRIDGE") && this.structure.id == entry.getKey()){
+        		continue;
+        	}
+        	
+        	this.callReRegister(entry.getValue());
+        }
+        
+        for(Entry<Integer, Entity> entry : this.backupController.lights.entrySet()){        	
+        	this.callReRegister(entry.getValue());
+        }
+        
+        for(Entry<Integer, Entity> entry : this.backupController.sensors.entrySet()){
+        	this.callReRegister(entry.getValue());
+        }
+        
+        for(Entry<Integer, Entity> entry : this.backupController.users.entrySet()){
+        	// Check if the original type of this device is a user, if it has the same id, don't try to reconnect
+        	if(this.structure.type.toString().equals("USER") && this.structure.id == entry.getKey()){
+        		continue;
+        	}
+        	
+        	this.callReRegister(entry.getValue());
+        }
+        
+	}
+	
+	// Calls the reregister method on controlled Devices
+	public void callReRegister(Entity entity){
+		try{
+			InetAddress ipAddress = InetAddress.getByName(entity.ipAdress);
+			InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, entity.port);
+			Transceiver client = new SaslSocketTransceiver(socketAddress);
+			
+			if(entity.type.toString().equals("FRIDGE")){
+				Fridge proxy = (Fridge) SpecificRequestor.getClient(Fridge.class, client);
+				proxy.reRegister(backupController.ipAdress, backupController.port);
+			}else if(entity.type.toString().equals("LIGHT")){
+				Light proxy = (Light) SpecificRequestor.getClient(Light.class, client);
+				proxy.reRegister(backupController.ipAdress, backupController.port);
+			}else if(entity.type.toString().equals("SENSOR")){
+				Sensor proxy = (Sensor) SpecificRequestor.getClient(Sensor.class, client);
+				proxy.reRegister(backupController.ipAdress, backupController.port);
+			}else if(entity.type.toString().equals("USER")){
+				User proxy = (User) SpecificRequestor.getClient(User.class, client);
+				proxy.reRegister(backupController.ipAdress, backupController.port);
+			}else{
+				client.close();
+				throw new Exception("[ERROR] Trying to reregister unkown type.");
+			}
+			
+			client.close();
+		}catch(Exception e){
+			System.err.println("[Error] Connecting to client");
+			e.printStackTrace();
+		}
 	}
 
 }

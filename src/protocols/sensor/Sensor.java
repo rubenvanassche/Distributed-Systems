@@ -8,7 +8,7 @@ package protocols.sensor;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Sensor {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Sensor\",\"namespace\":\"protocols.sensor\",\"types\":[],\"messages\":{\"getTemperature\":{\"request\":[],\"response\":\"double\"},\"getClock\":{\"request\":[],\"response\":\"double\"},\"ping\":{\"request\":[],\"response\":\"boolean\"}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Sensor\",\"namespace\":\"protocols.sensor\",\"types\":[],\"messages\":{\"getTemperature\":{\"request\":[],\"response\":\"double\"},\"getClock\":{\"request\":[],\"response\":\"double\"},\"ping\":{\"request\":[],\"response\":\"boolean\"},\"reRegister\":{\"doc\":\"When a controller goes down, the new controller calls this method to let the devices know ther is a new controller\",\"request\":[{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"}],\"response\":\"null\"}}}");
   /**
    */
   double getTemperature() throws org.apache.avro.AvroRemoteException;
@@ -18,6 +18,10 @@ public interface Sensor {
   /**
    */
   boolean ping() throws org.apache.avro.AvroRemoteException;
+  /**
+   * When a controller goes down, the new controller calls this method to let the devices know ther is a new controller
+   */
+  java.lang.Void reRegister(java.lang.CharSequence ipadress, int port) throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends Sensor {
@@ -34,5 +38,10 @@ public interface Sensor {
      * @throws java.io.IOException The async call could not be completed.
      */
     void ping(org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
+    /**
+     * When a controller goes down, the new controller calls this method to let the devices know ther is a new controller
+     * @throws java.io.IOException The async call could not be completed.
+     */
+    void reRegister(java.lang.CharSequence ipadress, int port, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
   }
 }

@@ -46,10 +46,34 @@ public class ControlledManager extends Manager {
 			System.err.println("[Error] " + e.getInfo());
 		}catch (Exception e) {
 			// TODO: handle exception
-			System.err.println("[Error] Error in registering device with server");
+			System.err.println("[Error] Error in registering device with controller server");
 			e.printStackTrace(System.err);
 			System.exit(1);
 		}	
+	}
+	
+	// Gets called when a new controller was selected and information needs to be updated
+	public void reRegister(String ipadress, int port){
+		// Stop the connection to the old proxy
+		this.controller = null;
+		
+		
+		// recreate the proxy
+		try{
+			InetAddress ipAddress = InetAddress.getByName(ipadress);
+			InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, port);
+			Transceiver client = new SaslSocketTransceiver(socketAddress);
+			controller = (Controller) SpecificRequestor.getClient(Controller.class, client);
+		}catch(IOException e){
+			System.err.println("[Error] Connecting to new controller server");
+			e.printStackTrace(System.err);
+			System.exit(1);
+		}
+		
+		System.out.println("Reregistered with " + ipadress + ":" + port);
+		
+		// Now register with the new controller
+		this.registerToController();
 	}
 	
 }

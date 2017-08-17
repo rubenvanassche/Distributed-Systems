@@ -8,7 +8,7 @@ package protocols.fridge;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface Fridge {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[{\"type\":\"error\",\"name\":\"Failure\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"info\",\"type\":\"string\"}]}],\"messages\":{\"ping\":{\"request\":[],\"response\":\"boolean\"},\"getItems\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"string\"},\"errors\":[\"Failure\"]},\"removeItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"null\",\"errors\":[\"Failure\"]},\"addItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"null\",\"errors\":[\"Failure\"]}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"Fridge\",\"namespace\":\"protocols.fridge\",\"types\":[{\"type\":\"error\",\"name\":\"Failure\",\"doc\":\"Failure\",\"fields\":[{\"name\":\"info\",\"type\":\"string\"}]}],\"messages\":{\"ping\":{\"request\":[],\"response\":\"boolean\"},\"getItems\":{\"request\":[],\"response\":{\"type\":\"array\",\"items\":\"string\"},\"errors\":[\"Failure\"]},\"removeItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"null\",\"errors\":[\"Failure\"]},\"addItem\":{\"request\":[{\"name\":\"item\",\"type\":\"string\"}],\"response\":\"null\",\"errors\":[\"Failure\"]},\"reRegister\":{\"doc\":\"When a controller goes down, the new controller calls this method to let the devices know ther is a new controller\",\"request\":[{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"}],\"response\":\"null\"}}}");
   /**
    */
   boolean ping() throws org.apache.avro.AvroRemoteException;
@@ -21,6 +21,10 @@ public interface Fridge {
   /**
    */
   java.lang.Void addItem(java.lang.CharSequence item) throws org.apache.avro.AvroRemoteException, protocols.fridge.Failure;
+  /**
+   * When a controller goes down, the new controller calls this method to let the devices know ther is a new controller
+   */
+  java.lang.Void reRegister(java.lang.CharSequence ipadress, int port) throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends Fridge {
@@ -41,5 +45,10 @@ public interface Fridge {
      * @throws java.io.IOException The async call could not be completed.
      */
     void addItem(java.lang.CharSequence item, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
+    /**
+     * When a controller goes down, the new controller calls this method to let the devices know ther is a new controller
+     * @throws java.io.IOException The async call could not be completed.
+     */
+    void reRegister(java.lang.CharSequence ipadress, int port, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
   }
 }

@@ -141,11 +141,9 @@ public class CLI {
             return;
         }
         
-        Thread t = new Thread(new GUI(manager));
-        t.start();
-        
         // Start the server
         manager.run();
+        
         System.out.println("test");
 	}
 	

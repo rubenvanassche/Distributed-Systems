@@ -6,9 +6,10 @@
 package protocols.user;
 
 @SuppressWarnings("all")
+/** Protocol for communicating with a User Device */
 @org.apache.avro.specific.AvroGenerated
 public interface User {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"User\",\"namespace\":\"protocols.user\",\"types\":[],\"messages\":{\"inHouse\":{\"request\":[],\"response\":\"boolean\"},\"message\":{\"doc\":\"Send a message t\",\"request\":[{\"name\":\"contents\",\"type\":\"string\"}],\"response\":\"null\"}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"User\",\"namespace\":\"protocols.user\",\"doc\":\"Protocol for communicating with a User Device\",\"types\":[],\"messages\":{\"inHouse\":{\"request\":[],\"response\":\"boolean\"},\"message\":{\"doc\":\"Send a message t\",\"request\":[{\"name\":\"contents\",\"type\":\"string\"}],\"response\":\"null\"},\"reRegister\":{\"doc\":\"When a controller goes down, the new controller calls this method to let the devices know ther is a new controller\",\"request\":[{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"}],\"response\":\"null\"}}}");
   /**
    */
   boolean inHouse() throws org.apache.avro.AvroRemoteException;
@@ -16,8 +17,13 @@ public interface User {
    * Send a message t
    */
   java.lang.Void message(java.lang.CharSequence contents) throws org.apache.avro.AvroRemoteException;
+  /**
+   * When a controller goes down, the new controller calls this method to let the devices know ther is a new controller
+   */
+  java.lang.Void reRegister(java.lang.CharSequence ipadress, int port) throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
+  /** Protocol for communicating with a User Device */
   public interface Callback extends User {
     public static final org.apache.avro.Protocol PROTOCOL = protocols.user.User.PROTOCOL;
     /**
@@ -29,5 +35,10 @@ public interface User {
      * @throws java.io.IOException The async call could not be completed.
      */
     void message(java.lang.CharSequence contents, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
+    /**
+     * When a controller goes down, the new controller calls this method to let the devices know ther is a new controller
+     * @throws java.io.IOException The async call could not be completed.
+     */
+    void reRegister(java.lang.CharSequence ipadress, int port, org.apache.avro.ipc.Callback<java.lang.Void> callback) throws java.io.IOException;
   }
 }

@@ -1,6 +1,7 @@
 { 
 	"namespace": "protocols.user", 
 	"protocol" : "User",
+	"doc" : "Protocol for communicating with a User Device",
 	"messages" : {
 		"inHouse" : {
 			"request" : [],
@@ -9,6 +10,14 @@
 		"message" : {
 			"doc" : "Send a message t",
 			"request" : [{"name" : "contents", "type" : "string"}],
+			"response" : "null"
+		},
+		"reRegister" : {
+			"request" : [
+				{"name": "ipadress", "type": "string"},
+				{"name": "port", "type": "int"}
+			],
+			"doc" : "When a controller goes down, the new controller calls this method to let the devices know ther is a new controller",
 			"response" : "null"
 		}
 	}
