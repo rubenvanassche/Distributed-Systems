@@ -34,7 +34,7 @@
 		]}
 	],
 	"messages" : {
-		"setup" : {
+		"handshake" : {
 			"request" : [{"name" : "controller", "type" : "Controller"}],
 			"response" : "null",
 			"doc" : "Initial replication, sending all entities available at the moment",
@@ -58,16 +58,10 @@
 			"doc" : "Each time the light status gets updated in the controller, this method will be called",
 			"errors": ["Failure"]
 		},
-		"openFridge" : {
+		"updateFridge" : {
 			"request" : [{"name": "data", "type": "FridgeStatus"}],
 			"response" : "null",
-			"doc" : "Each time a fridge gets opened, this method will be called",
-			"errors": ["Failure"]
-		},
-		"closeFridge" : {
-			"request" : [{"name": "data", "type": "FridgeStatus"}],
-			"response" : "null",
-			"doc" : "Each time a fridge gets opened, this method will be called",
+			"doc" : "Each time a fridge gets updated, this method will be called",
 			"errors": ["Failure"]
 		}
 	}

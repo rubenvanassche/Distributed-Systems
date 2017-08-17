@@ -17,6 +17,8 @@ public class LightManager extends ControlledManager {
 		this.type = type.LIGHT;
 		this.light = (Light) fstructure;
 		// TODO Auto-generated constructor stub
+		
+		this.registerToController(); // Register to controller, only needed for light and sensor because user and fridge get registered in the replicationmanager
 	}
 	
     @Command(description="Get the status of the light: on/off")

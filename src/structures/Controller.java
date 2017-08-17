@@ -127,7 +127,7 @@ public class Controller extends Device{
 	public LinkedList<Double> getLastTemperatures(){
 		// generate the output list
 		LinkedList<Double> output = new LinkedList<Double>();
-		for(int i = 0;i < 5;i++){
+		for(int i = 0;i < this.amountOfMeasurements;i++){
 			output.add(0.0);
 		}
 		
@@ -144,7 +144,7 @@ public class Controller extends Device{
 		}
 		
 		// Devide the output by the amount of samples
-		for(int i = 0;i < 5;i++){
+		for(int i = 0;i < this.amountOfMeasurements;i++){
 			output.set(i, output.get(i) / samples);
 		}
 		
@@ -190,6 +190,79 @@ public class Controller extends Device{
 	// Get the fridge status
 	public FridgeStatus getFridgeStatus(){
 		return this.openFridges.get(id);
+	}
+	
+	// Print information for replication purposes
+	public void replicationInfo(){
+		System.out.println("Entities");
+		System.out.println("--------");
+		for(Entry<Integer, Entity> entity : this.fridges.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: fridge, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		for(Entry<Integer, Entity> entity : this.lights.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: light, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		for(Entry<Integer, Entity> entity : this.sensors.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: sensor, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		for(Entry<Integer, Entity> entity : this.users.entrySet()){
+			Entity e = entity.getValue();
+			System.out.println("type: user, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
+		}
+		System.out.println("Temperature History");
+		System.out.println("-------------------");
+		for(Entry<Integer, TemperatureHistory> entry : this.temperatures.entrySet()){
+			TemperatureHistory t = entry.getValue();
+			LinkedList<Double> temperatures = this.getLastTemperatures(t.deviceID);
+			String temperaturesString = "";
+			
+			for(Double temperature : temperatures){
+				temperaturesString += String.valueOf(temperature) + ", ";
+			}
+			
+			System.out.println("Sensorid: " + t.deviceID + ", temperatures: " + temperaturesString);
+		}
+		System.out.println("Light Status");
+		System.out.println("------------");
+		for(LightStatus status : this.lightStatus){
+			if(status.getState() == true){
+				System.out.println("LightId :" + status.getId() + ", status : on");
+			}else{
+				System.out.println("LightId :" + status.getId() + ", status : off");
+			}
+		}
+		System.out.println("Open Fridges");
+		System.out.println("------------");
+		for(Entry<Integer, FridgeStatus> entry : this.openFridges.entrySet()){
+			FridgeStatus status = entry.getValue();
+			if(status.open == true){
+				System.out.println("fridgeId: " + status.id + ", userId: " + status.userid + ", opened");
+			}else{
+				System.out.println("fridgeId: " + status.id + ", userId: " + status.userid + ", closed");
+			}
+		}
+		System.out.println("Amount Of Measurements");
+		System.out.println("----------------------");
+		System.out.println(this.amountOfMeasurements);
+	}
+	
+	// Clear the whole controller
+	public void clear(){
+		this.fridges.clear();
+		this.lights.clear();
+		this.sensors.clear();
+		this.users.clear();
+		
+		this.temperatures.clear();
+		
+		this.lightStatus.clear();
+		
+		this.openFridges.clear();
+		
+		this.amountOfMeasurements = 0;
 	}
 	
 }

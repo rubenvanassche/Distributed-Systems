@@ -5,7 +5,7 @@ import org.apache.avro.ipc.Server;
 import protocols.controller.Controller;
 import structures.Device;
 
-public class FridgeManager extends ControlledManager {
+public class FridgeManager extends ReplicatedManager {
 
 	public FridgeManager(Device fstructure, Server server) {
 		super(fstructure, server);

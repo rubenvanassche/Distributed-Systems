@@ -21,6 +21,8 @@ public class SensorManager extends ControlledManager {
 		this.type = type.SENSOR;
 		this.sensor = (Sensor) this.structure;
 		
+		this.registerToController(); // Register to controller, only needed for light and sensor because user and fridge get registered in the replicationmanager
+		
 		startUpdating();
 	}
 	

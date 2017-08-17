@@ -23,7 +23,7 @@ import protocols.light.Light;
 import structures.Device;
 import structures.User;
 
-public class UserManager extends ControlledManager {
+public class UserManager extends ReplicatedManager {
 	public User user;
 	public Boolean usingFridge = false; // True when user has opened the fridge
 	public Fridge fridge; // RPC connection to a fridge

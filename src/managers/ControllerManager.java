@@ -24,8 +24,10 @@ import protocols.controller.Failure;
 import protocols.controller.LightStatus;
 import protocols.fridge.Fridge;
 import protocols.light.Light;
+import protocols.replication.Replication;
 import protocols.sensor.Sensor;
 import protocols.user.User;
+import replication.ReplicationClient;
 import structures.Entity;
 import structures.TemperatureHistory;
 import structures.Entity.Type;
@@ -38,12 +40,13 @@ public class ControllerManager extends Manager {
 	public Map<Integer, Light> lightProxies = new HashMap<Integer, Light>(); // RPC connection to lights
 	public Map<Integer, Sensor> sensorProxies = new HashMap<Integer, Sensor>(); // RPC connection to sensors
 	public Map<Integer, User> userProxies = new HashMap<Integer, User>(); // RPC connection to users
-	
+	ReplicationClient replication = null;
 
 	public ControllerManager(structures.Controller controller, Server server) {
 		super(server);
 		this.type = type.CONTROLLER;
 		this.structure = controller;
+		this.replication = new ReplicationClient(this.structure);
 	}
 	
 	public void AddProxy(Device device){
@@ -58,18 +61,23 @@ public class ControllerManager extends Manager {
 			if(type.equals(Type.CONTROLLER)){
 				System.err.println("[Error] Trying to create a proxy for the controller to an controller, there can only be one.");
 				System.exit(1);
-			}else if(type.equals(Type.FRIDGE)){
-				Fridge fridge = (Fridge) SpecificRequestor.getClient(Fridge.class, client);
-				this.fridgeProxies.put(id, fridge);
+			}else if(type.equals(Type.FRIDGE) || type.equals(Type.USER)){				
+				if(type.equals(Type.FRIDGE)){
+					Fridge fridge = (Fridge) SpecificRequestor.getClient(Fridge.class, client);
+					this.fridgeProxies.put(id, fridge);
+				}else if(type.equals(Type.USER)){
+					User user = (User) SpecificRequestor.getClient(User.class, client);
+					this.userProxies.put(id, user);
+				}
+				
+				// Make replication possible
+				this.replication.buildReplicator(device);
 			}else if(type.equals(Type.LIGHT)){
 				Light light = (Light) SpecificRequestor.getClient(Light.class, client);
 				this.lightProxies.put(id, light);
 			}else if(type.equals(Type.SENSOR)){
 				Sensor sensor = (Sensor) SpecificRequestor.getClient(Sensor.class, client);
 				this.sensorProxies.put(id, sensor);
-			}else if(type.equals(Type.USER)){
-				User user = (User) SpecificRequestor.getClient(User.class, client);
-				this.userProxies.put(id, user);
 			}else{
 				System.err.println("[Error] Trying to create a proxy for the controller to an unknown type.");
 				System.exit(1);
@@ -459,59 +467,7 @@ public class ControllerManager extends Manager {
 	
 	@Command(description="Get information about the replication of data")
 	public void replicationInfo(){
-		System.out.println("Entities");
-		System.out.println("--------");
-		for(Entry<Integer, Entity> entity : this.structure.fridges.entrySet()){
-			Entity e = entity.getValue();
-			System.out.println("type: fridge, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
-		}
-		for(Entry<Integer, Entity> entity : this.structure.lights.entrySet()){
-			Entity e = entity.getValue();
-			System.out.println("type: light, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
-		}
-		for(Entry<Integer, Entity> entity : this.structure.sensors.entrySet()){
-			Entity e = entity.getValue();
-			System.out.println("type: sensor, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
-		}
-		for(Entry<Integer, Entity> entity : this.structure.users.entrySet()){
-			Entity e = entity.getValue();
-			System.out.println("type: user, id:" + e.id + ", ip:" + e.ipAdress + ", port: " + e.port);
-		}
-		System.out.println("Temperature History");
-		System.out.println("-------------------");
-		for(Entry<Integer, TemperatureHistory> entry : this.structure.temperatures.entrySet()){
-			TemperatureHistory t = entry.getValue();
-			LinkedList<Double> temperatures = this.structure.getLastTemperatures(t.deviceID);
-			String temperaturesString = "";
-			
-			for(Double temperature : temperatures){
-				temperaturesString += String.valueOf(temperature) + ", ";
-			}
-			
-			System.out.println("Sensorid: " + t.deviceID + ", temperatures: " + temperaturesString);
-		}
-		System.out.println("Light Status");
-		System.out.println("------------");
-		for(LightStatus status : this.structure.lightStatus){
-			if(status.getState() == true){
-				System.out.println("LightId :" + status.getId() + ", status : on");
-			}else{
-				System.out.println("LightId :" + status.getId() + ", status : off");
-			}
-		}
-		System.out.println("Open Fridges");
-		System.out.println("------------");
-		for(Entry<Integer, FridgeStatus> entry : this.structure.openFridges.entrySet()){
-			FridgeStatus status = entry.getValue();
-			if(status.open == true){
-				System.out.println("fridgeId: " + status.id + ", userId: " + status.userid + ", opened");
-			}else{
-				System.out.println("fridgeId: " + status.id + ", userId: " + status.userid + ", closed");
-			}
-		}
-		System.out.println("Amount Of Measurements");
-		System.out.println("----------------------");
-		System.out.println(this.structure.amountOfMeasurements);
+		this.structure.replicationInfo();
 	}
 	
 }

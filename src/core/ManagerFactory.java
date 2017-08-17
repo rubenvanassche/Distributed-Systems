@@ -30,19 +30,26 @@ public class ManagerFactory {
 			System.err.println("[Error] Failed to start server");
 			e.printStackTrace(System.err);
 			System.exit(1);
+		}catch(Exception e){
+			System.err.println("[Error] Failed to start server");
+			e.printStackTrace(System.err);
 		}
 		
 		return server;
 	}
 	
-	public ControllerManager createControllerManager(int amountOfMeasurements){
-		Controller device = devicefactory.createController(amountOfMeasurements);
+	public ControllerManager createControllerManager(int amountOfMeasurements, Controller device){
 		servers.ControllerServer deviceServer = new servers.ControllerServer(device);
 		Server server = createServer(deviceServer, protocols.controller.Controller.class);
 		
 		ControllerManager manager = new ControllerManager(device, server);
 		deviceServer.manager = manager;
 		return manager;
+	}
+	
+	public ControllerManager createControllerManager(int amountOfMeasurements){
+		Controller device = devicefactory.createController(amountOfMeasurements);
+		return this.createControllerManager(amountOfMeasurements, device);
 	}
 	
 	

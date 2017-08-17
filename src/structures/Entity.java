@@ -33,4 +33,12 @@ public class Entity {
 		this.port = device.getPort();
 		this.type = Type.valueOf(device.getType().toString());
 	}
+	
+	// Set information about the device via avro protocol
+	public void getInfoFromProtocolEntity(protocols.replication.Entity entity){
+		this.id = entity.getId();
+		this.ipAdress = entity.getIpadress().toString();
+		this.port = entity.getPort();
+		this.type = Type.valueOf(entity.getType().toString());
+	}
 }

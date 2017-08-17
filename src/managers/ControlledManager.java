@@ -36,6 +36,9 @@ public class ControlledManager extends Manager {
 			System.exit(1);
 		}
 		
+	}
+	
+	public void registerToController(){
 		// Try to register this device to the controller
 		try{
 			this.controller.register(structure.getProtocolDevice());
@@ -46,9 +49,7 @@ public class ControlledManager extends Manager {
 			System.err.println("[Error] Error in registering device with server");
 			e.printStackTrace(System.err);
 			System.exit(1);
-		}
-		
-		
+		}	
 	}
 	
 }
