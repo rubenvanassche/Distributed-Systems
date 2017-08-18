@@ -56,6 +56,7 @@ java -jar app.jar -type user -id 1 -ip 192.168.1.1 -port 1000 -cip 192.168.1.1 -
 ```
 
 ## Gebruik
+Elk device bevat een cliche command shell, deze is interactief en d.m.v.
 
 ## Design
 Alle vereisten uit de opgave zijn geimplementeerd! Hieronder een woordje uitleg bij belangrijke facetten van het netwerk.
@@ -88,9 +89,30 @@ Er is rekening gehouden met vanalles wat kan fout gaan, hieronder een lijst van 
 - Indien een gebruiker al thuis is en nogmaals probeert thuis te komen, wordt een melding weergeven
 
 ### Replication
+Om ervoor te kunnen zorgen dat de controller kan uitvallen en dat een fridge of user kan overnemen is er een replication protocol gebouwd. Dit protocol houdt zich bezig met het repliceren van data van controller(client) naar fridges & users(server). En het selecteren d.m.v. een Chang-Roberts ring van een nieuwe controller mocht de oude uitvallen.
+
+Wanneer een nieuwe fridge of user opstart, start deze naast een standaard server die commando's van de controller verwerkt ook een replication server. Dit is de reden dat users en fridges 2 poorten nodig hebben om te kunnen draaien.
+
+De controller stuurt intitieel alle data door die het heeft voor replication naar nieuwe fridges en users. En bij elke update aan de interne structuur van de controller wordt ook een update gestuurd.
 
 ### Time Sync
+Om de klokken van de sensoren te synchroniseren wordt gebruik gemaakt can Christians Algorithm. De controller heeft een centrale klok die juist staat en hierop worden alle andere klokken gesynchroniseerd.
 
 ### Architectuur
+Het project maakt gebruik van een MVC structuur waarbij de controllers gesymboliseerd worden door classes met de naam manager.X . Deze bevat zowel een client en een server. In het geval van een gebruiker bevat deze dus een client voor connectie met de controller en UserServer.
 
-## Gebruikte Code
+Elke Manager van een device wordt afgeleid van een Manager class. Elk device dat controlled is (fridges, users, lights en sensors) wordt afgeleid van een ControlledManager class welke functies voorziet om connecties te maken met een controller. Elk replicating device(users en fridges) wordt afgeleid van een ReplicatedManager welke wordt afgeleid van een ControlledManager. Deze ReplicatedManager voorziet alle functionaliteit om om te gaan met kopieen van de controller en eventueel een backup controller te verkiezen en starten.
+
+De data structuur wordt gesymboliseerd door de structure.X . Elke user heeft dus een speciale Structure.User. Elke structure van een device wordt afgeleid van een structure.Device welke informatie bevat over hoe te connecteren met een controller. Deze structure.Device wordt dan weer afgeleid van een structure.Entity welke informatie(ip addres, port, id, type) bevat over het device om connecties aan te gaan.
+
+Replication wordt uitgevoerd met een ReplicationClient voor de controller en ReplicationServers voor users en fridges. Wanneer types van structure.X moeten omgezet worden naar Avro types wordt er gebruik gemaakt van ReplicationConverter.
+
+De Avro protocols bevinden zich allemaal in de protocols.X packages. Hierin zitten ook de JSON files om deze protocols d.m.v. Avro te genereren.
+
+Er zijn 2 factories: de devicefactory maakt structures.X aan voor verschillende apparaten en de managerfactory combineert deze structure met een client en een server om zo aan RPC te doen. Election.ElectionProcessor is een class die in elke ReplicatedManager wordt voorzien en een eventuele verkiezing van een nieuwe controller afhandeld.
+
+De GUI class wordt gebruikt om een apart thread op te starten met daarin een Cliche shell voor het uitvoeren van commando's. Als laatste is er de CLI class, hierin wordt een device opgestart. D.m.v. Commons.Cli wordt de command line input gelezen en verwerkt.
+
+## Externe Code
+- Cliche (http://cliche.sourceforge.net)
+- Apache Commons Cli (https://commons.apache.org/proper/commons-cli/)
