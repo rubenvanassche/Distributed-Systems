@@ -2,18 +2,8 @@ package core;
 
 import org.apache.commons.cli.*;
 
-import avro.hello.proto.Hello;
-import avro.hello.server.HelloServer;
 import managers.Manager;
-import structures.*;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import org.apache.avro.AvroRemoteException;
-import org.apache.avro.Protocol;
-import org.apache.avro.ipc.SaslSocketServer;
-import org.apache.avro.ipc.Server;
-import org.apache.avro.ipc.specific.SpecificResponder;
 
 public class CLI {
 	public static void main(String[] args){
@@ -32,11 +22,9 @@ public class CLI {
         options.addOption(port);
         
         Option cip = new Option("cip", "controlleripadress", true, "the ip adress of the controller server");
-        cip.setRequired(true);
         options.addOption(cip);
         
         Option cport = new Option("cport", "controllerport", true, "the port of this controller where the server runs");
-        cport.setRequired(true);
         options.addOption(cport);
         
         Option type = new Option("type", "type", true, "the type of device to create(controller, fridge, light, sensor, user)");
@@ -74,18 +62,38 @@ public class CLI {
         
 	}
 	
-	public static void createManagers(CommandLine cmd){
-        DeviceFactory deviceFactory = createFactory(cmd.getOptionValue("id"), 
-        		cmd.getOptionValue("cip"), 
-        		cmd.getOptionValue("cport"), 
-        		cmd.getOptionValue("ip"), 
-        		cmd.getOptionValue("port"));
-        
-        ManagerFactory factory = new ManagerFactory(deviceFactory);
-        
-        
+	public static void createManagers(CommandLine cmd){        
         String type = cmd.getOptionValue("type");
         type = type.toUpperCase(); // So it matches the type enum in structures.entity
+    
+        DeviceFactory deviceFactory = null;
+        
+        if(type.contentEquals("FRIDGE") || type.contentEquals("LIGHT") || type.contentEquals("SENSOR") || type.contentEquals("USER")){
+        	try{
+        		Integer.parseInt(cmd.getOptionValue("cport"));
+        		if(cmd.getOptionValue("cip").equals("")){
+        			throw new Exception();
+        		}
+        	}catch (Exception e) {
+        		System.out.println("[ERROR] when building a controlled device, a cip and cport are required!");
+            	System.exit(1);
+                return;
+			}
+        	
+        	deviceFactory = createFactory(cmd.getOptionValue("id"), 
+            		cmd.getOptionValue("cip"), 
+            		cmd.getOptionValue("cport"), 
+            		cmd.getOptionValue("ip"), 
+            		cmd.getOptionValue("port"));
+        	
+        }else{
+        	deviceFactory = createFactory(cmd.getOptionValue("id"),  
+            		cmd.getOptionValue("ip"), 
+            		cmd.getOptionValue("port"));
+        }
+        
+        
+        ManagerFactory factory = new ManagerFactory(deviceFactory);
         Manager manager = null;
         
         if(type.contentEquals("CONTROLLER")){
@@ -151,6 +159,18 @@ public class CLI {
 		int id = Integer.parseInt(fid);
 		String controllerIP = fcontrollerIP;
 		int controllerPort = Integer.parseInt(fcontrollerPort);
+		String ipAdress = fipAdress;
+		int port = Integer.parseInt(fport);
+		
+		DeviceFactory factory = new DeviceFactory(id, controllerIP, controllerPort, ipAdress, port);
+		
+		return factory;
+	}
+	
+	public static DeviceFactory createFactory(String fid, String fipAdress, String fport){
+		int id = Integer.parseInt(fid);
+		String controllerIP = "0.0.0.0";
+		int controllerPort = 5649;
 		String ipAdress = fipAdress;
 		int port = Integer.parseInt(fport);
 		

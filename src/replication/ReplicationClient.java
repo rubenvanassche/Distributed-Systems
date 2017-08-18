@@ -42,9 +42,7 @@ public class ReplicationClient {
 			// Do an initial handshake
 			this.handshake(replicator);
 		}catch(IOException e){
-			System.err.println("[Error] Connecting to replication server");
-			e.printStackTrace(System.err);
-			System.exit(1);
+			System.err.println("[Error] Connecting to replication server : " + e.getMessage());
 		}
 		
 	}

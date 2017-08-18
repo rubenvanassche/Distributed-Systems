@@ -27,12 +27,11 @@ public class ManagerFactory {
 			InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, deviceServer.device.port);
 			server = new SaslSocketServer(new SpecificResponder(proto, deviceServer), socketAddress);
 		}catch(IOException e){
-			System.err.println("[Error] Failed to start server");
-			e.printStackTrace(System.err);
+			System.err.println("[Error] Failed to start server : " + e.getMessage());
 			System.exit(1);
 		}catch(Exception e){
-			System.err.println("[Error] Failed to start server");
-			e.printStackTrace(System.err);
+			System.err.println("[Error] Failed to start server : " + e.getMessage());
+			System.exit(1);
 		}
 		
 		return server;

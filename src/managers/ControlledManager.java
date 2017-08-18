@@ -10,7 +10,6 @@ import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.Transceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 
-import avro.hello.proto.Hello;
 import protocols.controller.Controller;
 import protocols.controller.Failure;
 import structures.Device;
@@ -31,8 +30,7 @@ public class ControlledManager extends Manager {
 			Transceiver client = new SaslSocketTransceiver(socketAddress);
 			controller = (Controller) SpecificRequestor.getClient(Controller.class, client);
 		}catch(IOException e){
-			System.err.println("[Error] Connecting to server");
-			e.printStackTrace(System.err);
+			System.err.println("[Error] Failed to connect to server : " + e.getMessage());
 			System.exit(1);
 		}
 		
@@ -45,9 +43,7 @@ public class ControlledManager extends Manager {
 		}catch (Failure e){
 			System.err.println("[Error] " + e.getInfo());
 		}catch (Exception e) {
-			// TODO: handle exception
-			System.err.println("[Error] Error in registering device with controller server");
-			e.printStackTrace(System.err);
+			System.err.println("[Error] Couldn't register device with controller : " + e.getMessage());
 			System.exit(1);
 		}	
 	}
@@ -65,8 +61,7 @@ public class ControlledManager extends Manager {
 			Transceiver client = new SaslSocketTransceiver(socketAddress);
 			controller = (Controller) SpecificRequestor.getClient(Controller.class, client);
 		}catch(IOException e){
-			System.err.println("[Error] Connecting to new controller server");
-			e.printStackTrace(System.err);
+			System.err.println("[Error] Connecting to controller server : " + e.getMessage());
 			System.exit(1);
 		}
 		

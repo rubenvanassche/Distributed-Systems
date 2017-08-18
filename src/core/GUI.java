@@ -5,7 +5,6 @@ import structures.Entity.Type;
 import asg.cliche.CLIException;
 import asg.cliche.Shell;
 import asg.cliche.ShellFactory;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class GUI extends Thread {

@@ -267,8 +267,7 @@ public class ReplicatedManager extends ControlledManager {
 			
 			client.close();
 		}catch(Exception e){
-			System.err.println("[Error] Connecting to client");
-			e.printStackTrace();
+			System.err.println("[Error] Connecting to client : " + e.getMessage());
 		}
 	}
 	
@@ -313,12 +312,9 @@ public class ReplicatedManager extends ControlledManager {
 			InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, deviceServer.device.port);
 			server = new SaslSocketServer(new SpecificResponder(proto, deviceServer), socketAddress);
 		}catch(IOException e){
-			System.err.println("[Error] Failed to start server");
-			e.printStackTrace(System.err);
-			System.exit(1);
+			System.err.println("[Error] Failed to start server : " + e.getMessage());
 		}catch(Exception e){
-			System.err.println("[Error] Failed to start server");
-			e.printStackTrace(System.err);
+			System.err.println("[Error] Failed to start server : " + e.getMessage());
 		}
 		
 		return server;

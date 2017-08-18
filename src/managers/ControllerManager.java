@@ -92,8 +92,7 @@ public class ControllerManager extends Manager {
 			this.replication.registerEntity(entity);
 			
 		}catch(IOException e){
-			System.err.println("[Error] Connecting to server");
-			e.printStackTrace(System.err);
+			System.err.println("[Error] Connecting to server : " + e.getMessage());
 			System.exit(1);
 		}
 	}
