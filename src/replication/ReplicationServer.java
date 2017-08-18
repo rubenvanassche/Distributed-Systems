@@ -27,21 +27,30 @@ public class ReplicationServer implements protocols.replication.Replication {
 		// Clear the controller structure, so that info about previous devices is gone!
 		this.structure.clear();
 		
+		// Set amount of measurements
 		this.structure.amountOfMeasurements = controller.getAmountOfMeasurements();
 		
+		// Set entities
 		for(Entity entity : controller.getEntities()){
 			this.registerEntity(entity);
 		}
 		
+		// Set the temperature history
 		for(TemperatureHistory temperatureHistory : controller.getTemperatureHistories()){
 			this.addTemperatureHistory(temperatureHistory);
 		}
 		
+		// Update the light statusses
 		this.updateLightStatus(controller.getLightStatusses());
 		
+		// Update the fridge statusses
 		for(FridgeStatus fridgeStatus : controller.getOpenFridges()){
 			this.updateFridge(fridgeStatus);
 		}
+		
+		// Set the original entity, for referencing back to the original controller
+		this.structure.originalEntity = new structures.Entity();
+		this.structure.originalEntity.getInfoFromProtocolEntity(controller.getOriginalEntity());
 		
 		return null;
 	}

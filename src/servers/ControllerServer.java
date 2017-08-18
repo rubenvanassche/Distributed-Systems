@@ -26,7 +26,7 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	@Override
 	public boolean register(Device device) throws AvroRemoteException, Failure {
 		// TODO Auto-generated method stub
-		System.out.println("Registering " + device.getPort());
+		System.out.println("[info] Registering " + device.getType().toString() + " " + device.getId() + " at " + device.getIpadress() + ":" + device.getPort());
 		
 		try{
 			// Create a proxy to the device in the ControllerManager
@@ -41,7 +41,6 @@ public class ControllerServer extends Server implements protocols.controller.Con
 		}catch (Exception e) {
 			// TODO: handle exception
 			System.err.println("[Error] Error in registering device with controller, no manager set");
-			e.printStackTrace(System.err);
 			System.exit(1);
 		}
 		
@@ -192,6 +191,50 @@ public class ControllerServer extends Server implements protocols.controller.Con
 	@Override
 	public List<CharSequence> getFridgeItems(int fridgeId) throws AvroRemoteException, Failure {
 		return this.manager.getFridgeItems(fridgeId);
+	}
+
+	@Override
+	public boolean ping() throws AvroRemoteException {
+		return true;
+	}
+
+	@Override
+	public Void restart(List<LightStatus> lightStatusses, List<FridgeStatus> openFridges,
+			List<protocols.controller.TemperatureHistory> temperatureHistories, int amountOfMeasurements)
+			throws AvroRemoteException, Failure {
+		// Set light Statusses back
+		this.controller.lightStatus = lightStatusses;
+		
+		// Set openfridges back
+		for(FridgeStatus st : openFridges){
+			structures.FridgeStatus status = new structures.FridgeStatus(st.getId());
+			status.open = st.getOpened();
+			status.userid = st.getUserid();
+			
+			this.controller.openFridges.put(st.getId(), status);
+		}
+		
+		// Set temperaturehistories back
+		for(protocols.controller.TemperatureHistory th : temperatureHistories){
+			structures.TemperatureHistory history = new structures.TemperatureHistory();
+			history.amountOfMeasurements = amountOfMeasurements;
+			history.deviceID = th.getId();
+			for(Double temperature : th.getTemperatures()){
+				history.addTemperature(temperature);
+			}
+			
+			this.controller.temperatures.put(th.getId(), history);
+		}
+		
+		// set Amount of Measuremnts back
+		this.controller.amountOfMeasurements = amountOfMeasurements;
+		
+		return null;
+	}
+
+	@Override
+	public double getTime() throws AvroRemoteException {
+		return this.controller.time;
 	}
 
 }

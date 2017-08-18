@@ -22,7 +22,7 @@
 			{"name": "open", "type": "boolean"}
 		]},
 		{"name": "Controller", "type": "record", "doc" : "Initial structure to be send for replication", "fields": [
-			{"name": "controllerEntity", "type": "Entity"},
+			{"name": "originalEntity", "type": "Entity"},
 			{"name": "entities", "type": {"type" : "array", "items" : "Entity"}},
 			{"name": "temperatureHistories", "type": {"type" : "array", "items" : "TemperatureHistory"}},
 			{"name": "lightStatusses", "type": {"type" : "array", "items" : "LightStatus"}},

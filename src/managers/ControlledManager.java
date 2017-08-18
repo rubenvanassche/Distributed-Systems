@@ -70,7 +70,7 @@ public class ControlledManager extends Manager {
 			System.exit(1);
 		}
 		
-		System.out.println("Reregistered with " + ipadress + ":" + port);
+		System.out.println("[INFO ]Reregistered with controller " + ipadress + ":" + port);
 		
 		// Now register with the new controller
 		this.registerToController();

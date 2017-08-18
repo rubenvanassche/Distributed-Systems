@@ -15,6 +15,10 @@
 			{"name": "id", "type": "int"},
 			{"name": "state", "type": "boolean"}
 		]},
+		{"name": "TemperatureHistory", "type": "record", "doc" : "Temperature measured by a sensor", "fields": [
+			{"name": "id", "type": "int"},
+			{"name": "temperatures", "type": {"type" : "array", "items" : "double"}}
+		]},
 		{"name": "DeviceStatus", "type": "record", "doc" : "Information about a device and if it's online or not", "fields": [
 			{"name": "id", "type": "int"},
 			{"name": "online", "type": "boolean"},
@@ -119,11 +123,31 @@
 			"errors": ["Failure"]
 		},
 		"getFridgeItems" : {
-		"request" : [
+			"request" : [
 				{"name" : "fridgeId", "type": "int"}
 			],
 			"response" : {"type" : "array", "items" : "string"},
 			"errors": ["Failure"]
+		},
+		"ping" : {
+			"request" : [],
+			"response" : "boolean"
+		},
+		"restart" : {
+			"request" : [
+				{"name": "lightStatusses", "type": {"type" : "array", "items" : "LightStatus"}},
+				{"name": "openFridges", "type": {"type" : "array", "items" : "FridgeStatus"}},
+				{"name": "temperatureHistories", "type": {"type" : "array", "items" : "TemperatureHistory"}},
+				{"name": "amountOfMeasurements", "type" : "int"}
+			],
+			"doc" : "Information to restart the controller",
+			"response" : "null",
+			"errors": ["Failure"]
+		},
+		"getTime" : {
+			"request" : [],
+			"doc" : "Get the time from the controller",
+			"response" : "double"
 		}
 	}
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimerTask;
 import java.util.Map.Entry;
 
 import org.apache.avro.AvroRemoteException;
@@ -17,6 +18,7 @@ import org.apache.avro.ipc.specific.SpecificRequestor;
 
 import asg.cliche.Command;
 import asg.cliche.Param;
+import core.DeviceFactory;
 import protocols.controller.Controller;
 import protocols.controller.Device;
 import protocols.controller.DeviceStatus;
@@ -28,6 +30,7 @@ import protocols.replication.Replication;
 import protocols.sensor.Sensor;
 import protocols.user.User;
 import replication.ReplicationClient;
+import replication.ReplicationServer;
 import structures.Entity;
 import structures.TemperatureHistory;
 import structures.Entity.Type;
@@ -118,11 +121,11 @@ public class ControllerManager extends Manager {
     		) {
 		try {
 			this.setLightStatus(id, true);
+			System.out.println("Light ID: " + id  + " on");
 		} catch (Failure e) {
 			System.out.println(e.getInfo());
 		}
 		
-		System.out.println("Light ID: " + id  + " on");
     }
 	
 	@Command(description="Turn a light off")
@@ -133,11 +136,10 @@ public class ControllerManager extends Manager {
 		
 		try {
 			this.setLightStatus(id, false);
+			System.out.println("Light ID: " + id  + " off");
 		} catch (Failure e) {
 			System.out.println(e.getInfo());
 		}
-		
-		System.out.println("Light ID: " + id  + " off");
     }
 	
 	// Set a speicified light by id on or off
@@ -176,7 +178,7 @@ public class ControllerManager extends Manager {
     }
 
 	@Command(description="Get the temperature of a sensor")
-    public void sensor(
+    public void getTemperature(
     		@Param(name="id", description="The identifier of the temperature sensor")
     		Integer id
     		) {
@@ -195,7 +197,7 @@ public class ControllerManager extends Manager {
     }
 	
 	@Command(description="Get the temperatures measured by a sensor during time")
-    public void sensorHistory(
+    public void getTemperatureHistory(
     		@Param(name="id", description="The identifier of the temperature sensor")
     		Integer id
     		) {
@@ -262,6 +264,7 @@ public class ControllerManager extends Manager {
 		}
 	}
 	
+	// Get information about which devices are online
 	public List<DeviceStatus> devicesStatus(){
 		List<DeviceStatus> devices = new LinkedList<DeviceStatus>();
 		
@@ -371,6 +374,11 @@ public class ControllerManager extends Manager {
 		System.out.println("Users");
 		System.out.println("-----");
 		this.users();
+	}
+	
+	@Command(description="Get the time")
+	public void getClock(){
+		System.out.println(this.structure.time);
 	}
 
 	// Get the status of all the lights

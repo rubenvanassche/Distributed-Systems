@@ -41,8 +41,6 @@ public class GUI extends Thread {
 				System.err.println(e.getMessage());
 			}
 		}
-		
-		System.out.println("Closing down " + name);
 	}
 	
 	public void quit(){

@@ -35,6 +35,16 @@ public class SensorManager extends ControlledManager {
 				sendTemperature();
 			}
 		}
+		
+		public void sendTemperature(){
+			try {
+				controller.updateTemperature(sensor.id, sensor.temperature);
+			} catch (Failure e){
+				System.err.println(e.getMessage());
+			} catch (AvroRemoteException e) {
+				System.err.println("[ERROR] Couldn't find a controller");
+			}
+		}
 	}
 	
 	// Starts updating the clock and temperature
@@ -45,16 +55,6 @@ public class SensorManager extends ControlledManager {
 		timer.scheduleAtFixedRate(sendTemperatureTask, 0, 1*10);
 	}
 
-	@Command(description="Send the current temperature to the controller")
-	public void sendTemperature(){
-		try {
-			this.controller.updateTemperature(this.sensor.id, this.sensor.temperature);
-		} catch (Failure e){
-			System.err.println(e.getMessage());
-		} catch (AvroRemoteException e) {
-			System.err.println("[ERROR] Couldn't find a controller");
-		}
-	}
 
 	@Command(description="get the current temperature")
 	public void getTemperature(){

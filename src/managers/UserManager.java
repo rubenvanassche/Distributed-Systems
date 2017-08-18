@@ -56,8 +56,8 @@ public class UserManager extends ReplicatedManager {
         try {
 			this.controller.userLeave(this.user.id);
 		} catch (AvroRemoteException e) {
-			// TODO controlelr down, take over
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
     }
     
@@ -78,8 +78,8 @@ public class UserManager extends ReplicatedManager {
         try {
 			this.controller.userEnters(this.user.id);
 		} catch (AvroRemoteException e) {
-			// TODO controlelr down, take over
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
     }
     
@@ -98,8 +98,8 @@ public class UserManager extends ReplicatedManager {
     	try {
 			System.out.print(this.controller.getTemperature());
 		} catch (AvroRemoteException e) {
-			// TODO controlelr down, take over
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
     }
     
@@ -121,8 +121,8 @@ public class UserManager extends ReplicatedManager {
 				System.out.println(temperatures.get(i));
 			}
 		} catch (AvroRemoteException e) {
-			// TODO controlelr down, take over
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
     }
     
@@ -175,8 +175,8 @@ public class UserManager extends ReplicatedManager {
 		} catch (Failure e ){
 			System.out.println(e.getInfo());
 		} catch (AvroRemoteException e) {
-			// TODO controlelr down, take over
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
 	}
 	
@@ -196,8 +196,8 @@ public class UserManager extends ReplicatedManager {
 		try {
 			devices = this.controller.getDevices();
 		} catch (AvroRemoteException e) {
-			// TODO controlelr down, take over
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
 		
 		for(int i = 0;i < devices.size();i++){
@@ -227,8 +227,8 @@ public class UserManager extends ReplicatedManager {
 		try {
 			lights = this.controller.getLights();
 		} catch (AvroRemoteException e) {
-			// TODO controlelr down, take over
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
 		
 		for(int i = 0;i < lights.size();i++){
@@ -264,8 +264,9 @@ public class UserManager extends ReplicatedManager {
 			System.out.println(e.getInfo());
 			return; // We dont want to start a connection with this fridge
 		} catch (AvroRemoteException e) {
-			// TODO Connection to controller lost
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
+			return;  // We dont want to start a connection with this fridge
 		}
 		
 		
@@ -299,8 +300,8 @@ public class UserManager extends ReplicatedManager {
 		} catch(Failure e){
 			System.out.println(e.getInfo());
 		} catch (AvroRemoteException e) {
-			// TODO Connection to controller lost
-			e.printStackTrace();
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
     }
 	
@@ -382,7 +383,8 @@ public class UserManager extends ReplicatedManager {
 		} catch(Failure e){
 			throw new Exception(e.getInfo().toString());
 		} catch (AvroRemoteException e) {
-			// TODO connection to controller lost
+			System.out.println("[WARNING] Controller down, trying to select another one.");
+			this.StartElection();
 		}
 		
 		return out;

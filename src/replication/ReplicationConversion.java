@@ -100,7 +100,7 @@ public class ReplicationConversion {
 		// Controller entity
 		structures.Entity e = (Entity) c;
 		protocols.replication.Entity entity = this.convert(e);
-		controller.setControllerEntity(entity);
+		controller.setOriginalEntity(entity);
 		
 		return controller;
 	}

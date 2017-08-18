@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 /** Initial structure to be send for replication */
 @org.apache.avro.specific.AvroGenerated
 public class Controller extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 4151559123042920775L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Controller\",\"namespace\":\"protocols.replication\",\"doc\":\"Initial structure to be send for replication\",\"fields\":[{\"name\":\"controllerEntity\",\"type\":{\"type\":\"record\",\"name\":\"Entity\",\"doc\":\"Device info for the network\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"},{\"name\":\"type\",\"type\":\"string\"}]}},{\"name\":\"entities\",\"type\":{\"type\":\"array\",\"items\":\"Entity\"}},{\"name\":\"temperatureHistories\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"TemperatureHistory\",\"doc\":\"Temperature measured by a sensor\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"temperatures\",\"type\":{\"type\":\"array\",\"items\":\"double\"}}]}}},{\"name\":\"lightStatusses\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"LightStatus\",\"doc\":\"Status of all the lights\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"state\",\"type\":\"boolean\"}]}}},{\"name\":\"openFridges\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"FridgeStatus\",\"doc\":\"Information about the fridges opened\",\"fields\":[{\"name\":\"fridgeId\",\"type\":\"int\"},{\"name\":\"userId\",\"type\":\"int\"},{\"name\":\"open\",\"type\":\"boolean\"}]}}},{\"name\":\"amountOfMeasurements\",\"type\":\"int\"}]}");
+  private static final long serialVersionUID = -7442884602244703462L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Controller\",\"namespace\":\"protocols.replication\",\"doc\":\"Initial structure to be send for replication\",\"fields\":[{\"name\":\"originalEntity\",\"type\":{\"type\":\"record\",\"name\":\"Entity\",\"doc\":\"Device info for the network\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"},{\"name\":\"type\",\"type\":\"string\"}]}},{\"name\":\"entities\",\"type\":{\"type\":\"array\",\"items\":\"Entity\"}},{\"name\":\"temperatureHistories\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"TemperatureHistory\",\"doc\":\"Temperature measured by a sensor\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"temperatures\",\"type\":{\"type\":\"array\",\"items\":\"double\"}}]}}},{\"name\":\"lightStatusses\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"LightStatus\",\"doc\":\"Status of all the lights\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"state\",\"type\":\"boolean\"}]}}},{\"name\":\"openFridges\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"FridgeStatus\",\"doc\":\"Information about the fridges opened\",\"fields\":[{\"name\":\"fridgeId\",\"type\":\"int\"},{\"name\":\"userId\",\"type\":\"int\"},{\"name\":\"open\",\"type\":\"boolean\"}]}}},{\"name\":\"amountOfMeasurements\",\"type\":\"int\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -52,7 +52,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
     return DECODER.decode(b);
   }
 
-  @Deprecated public protocols.replication.Entity controllerEntity;
+  @Deprecated public protocols.replication.Entity originalEntity;
   @Deprecated public java.util.List<protocols.replication.Entity> entities;
   @Deprecated public java.util.List<protocols.replication.TemperatureHistory> temperatureHistories;
   @Deprecated public java.util.List<protocols.replication.LightStatus> lightStatusses;
@@ -68,15 +68,15 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
 
   /**
    * All-args constructor.
-   * @param controllerEntity The new value for controllerEntity
+   * @param originalEntity The new value for originalEntity
    * @param entities The new value for entities
    * @param temperatureHistories The new value for temperatureHistories
    * @param lightStatusses The new value for lightStatusses
    * @param openFridges The new value for openFridges
    * @param amountOfMeasurements The new value for amountOfMeasurements
    */
-  public Controller(protocols.replication.Entity controllerEntity, java.util.List<protocols.replication.Entity> entities, java.util.List<protocols.replication.TemperatureHistory> temperatureHistories, java.util.List<protocols.replication.LightStatus> lightStatusses, java.util.List<protocols.replication.FridgeStatus> openFridges, java.lang.Integer amountOfMeasurements) {
-    this.controllerEntity = controllerEntity;
+  public Controller(protocols.replication.Entity originalEntity, java.util.List<protocols.replication.Entity> entities, java.util.List<protocols.replication.TemperatureHistory> temperatureHistories, java.util.List<protocols.replication.LightStatus> lightStatusses, java.util.List<protocols.replication.FridgeStatus> openFridges, java.lang.Integer amountOfMeasurements) {
+    this.originalEntity = originalEntity;
     this.entities = entities;
     this.temperatureHistories = temperatureHistories;
     this.lightStatusses = lightStatusses;
@@ -88,7 +88,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
     switch (field$) {
-    case 0: return controllerEntity;
+    case 0: return originalEntity;
     case 1: return entities;
     case 2: return temperatureHistories;
     case 3: return lightStatusses;
@@ -102,7 +102,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: controllerEntity = (protocols.replication.Entity)value$; break;
+    case 0: originalEntity = (protocols.replication.Entity)value$; break;
     case 1: entities = (java.util.List<protocols.replication.Entity>)value$; break;
     case 2: temperatureHistories = (java.util.List<protocols.replication.TemperatureHistory>)value$; break;
     case 3: lightStatusses = (java.util.List<protocols.replication.LightStatus>)value$; break;
@@ -113,19 +113,19 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
   }
 
   /**
-   * Gets the value of the 'controllerEntity' field.
-   * @return The value of the 'controllerEntity' field.
+   * Gets the value of the 'originalEntity' field.
+   * @return The value of the 'originalEntity' field.
    */
-  public protocols.replication.Entity getControllerEntity() {
-    return controllerEntity;
+  public protocols.replication.Entity getOriginalEntity() {
+    return originalEntity;
   }
 
   /**
-   * Sets the value of the 'controllerEntity' field.
+   * Sets the value of the 'originalEntity' field.
    * @param value the value to set.
    */
-  public void setControllerEntity(protocols.replication.Entity value) {
-    this.controllerEntity = value;
+  public void setOriginalEntity(protocols.replication.Entity value) {
+    this.originalEntity = value;
   }
 
   /**
@@ -240,8 +240,8 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Controller>
     implements org.apache.avro.data.RecordBuilder<Controller> {
 
-    private protocols.replication.Entity controllerEntity;
-    private protocols.replication.Entity.Builder controllerEntityBuilder;
+    private protocols.replication.Entity originalEntity;
+    private protocols.replication.Entity.Builder originalEntityBuilder;
     private java.util.List<protocols.replication.Entity> entities;
     private java.util.List<protocols.replication.TemperatureHistory> temperatureHistories;
     private java.util.List<protocols.replication.LightStatus> lightStatusses;
@@ -259,12 +259,12 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
      */
     private Builder(protocols.replication.Controller.Builder other) {
       super(other);
-      if (isValidValue(fields()[0], other.controllerEntity)) {
-        this.controllerEntity = data().deepCopy(fields()[0].schema(), other.controllerEntity);
+      if (isValidValue(fields()[0], other.originalEntity)) {
+        this.originalEntity = data().deepCopy(fields()[0].schema(), other.originalEntity);
         fieldSetFlags()[0] = true;
       }
-      if (other.hasControllerEntityBuilder()) {
-        this.controllerEntityBuilder = protocols.replication.Entity.newBuilder(other.getControllerEntityBuilder());
+      if (other.hasOriginalEntityBuilder()) {
+        this.originalEntityBuilder = protocols.replication.Entity.newBuilder(other.getOriginalEntityBuilder());
       }
       if (isValidValue(fields()[1], other.entities)) {
         this.entities = data().deepCopy(fields()[1].schema(), other.entities);
@@ -294,11 +294,11 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
      */
     private Builder(protocols.replication.Controller other) {
             super(SCHEMA$);
-      if (isValidValue(fields()[0], other.controllerEntity)) {
-        this.controllerEntity = data().deepCopy(fields()[0].schema(), other.controllerEntity);
+      if (isValidValue(fields()[0], other.originalEntity)) {
+        this.originalEntity = data().deepCopy(fields()[0].schema(), other.originalEntity);
         fieldSetFlags()[0] = true;
       }
-      this.controllerEntityBuilder = null;
+      this.originalEntityBuilder = null;
       if (isValidValue(fields()[1], other.entities)) {
         this.entities = data().deepCopy(fields()[1].schema(), other.entities);
         fieldSetFlags()[1] = true;
@@ -322,75 +322,75 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
     }
 
     /**
-      * Gets the value of the 'controllerEntity' field.
+      * Gets the value of the 'originalEntity' field.
       * @return The value.
       */
-    public protocols.replication.Entity getControllerEntity() {
-      return controllerEntity;
+    public protocols.replication.Entity getOriginalEntity() {
+      return originalEntity;
     }
 
     /**
-      * Sets the value of the 'controllerEntity' field.
-      * @param value The value of 'controllerEntity'.
+      * Sets the value of the 'originalEntity' field.
+      * @param value The value of 'originalEntity'.
       * @return This builder.
       */
-    public protocols.replication.Controller.Builder setControllerEntity(protocols.replication.Entity value) {
+    public protocols.replication.Controller.Builder setOriginalEntity(protocols.replication.Entity value) {
       validate(fields()[0], value);
-      this.controllerEntityBuilder = null;
-      this.controllerEntity = value;
+      this.originalEntityBuilder = null;
+      this.originalEntity = value;
       fieldSetFlags()[0] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'controllerEntity' field has been set.
-      * @return True if the 'controllerEntity' field has been set, false otherwise.
+      * Checks whether the 'originalEntity' field has been set.
+      * @return True if the 'originalEntity' field has been set, false otherwise.
       */
-    public boolean hasControllerEntity() {
+    public boolean hasOriginalEntity() {
       return fieldSetFlags()[0];
     }
 
     /**
-     * Gets the Builder instance for the 'controllerEntity' field and creates one if it doesn't exist yet.
+     * Gets the Builder instance for the 'originalEntity' field and creates one if it doesn't exist yet.
      * @return This builder.
      */
-    public protocols.replication.Entity.Builder getControllerEntityBuilder() {
-      if (controllerEntityBuilder == null) {
-        if (hasControllerEntity()) {
-          setControllerEntityBuilder(protocols.replication.Entity.newBuilder(controllerEntity));
+    public protocols.replication.Entity.Builder getOriginalEntityBuilder() {
+      if (originalEntityBuilder == null) {
+        if (hasOriginalEntity()) {
+          setOriginalEntityBuilder(protocols.replication.Entity.newBuilder(originalEntity));
         } else {
-          setControllerEntityBuilder(protocols.replication.Entity.newBuilder());
+          setOriginalEntityBuilder(protocols.replication.Entity.newBuilder());
         }
       }
-      return controllerEntityBuilder;
+      return originalEntityBuilder;
     }
 
     /**
-     * Sets the Builder instance for the 'controllerEntity' field
+     * Sets the Builder instance for the 'originalEntity' field
      * @param value The builder instance that must be set.
      * @return This builder.
      */
-    public protocols.replication.Controller.Builder setControllerEntityBuilder(protocols.replication.Entity.Builder value) {
-      clearControllerEntity();
-      controllerEntityBuilder = value;
+    public protocols.replication.Controller.Builder setOriginalEntityBuilder(protocols.replication.Entity.Builder value) {
+      clearOriginalEntity();
+      originalEntityBuilder = value;
       return this;
     }
 
     /**
-     * Checks whether the 'controllerEntity' field has an active Builder instance
-     * @return True if the 'controllerEntity' field has an active Builder instance
+     * Checks whether the 'originalEntity' field has an active Builder instance
+     * @return True if the 'originalEntity' field has an active Builder instance
      */
-    public boolean hasControllerEntityBuilder() {
-      return controllerEntityBuilder != null;
+    public boolean hasOriginalEntityBuilder() {
+      return originalEntityBuilder != null;
     }
 
     /**
-      * Clears the value of the 'controllerEntity' field.
+      * Clears the value of the 'originalEntity' field.
       * @return This builder.
       */
-    public protocols.replication.Controller.Builder clearControllerEntity() {
-      controllerEntity = null;
-      controllerEntityBuilder = null;
+    public protocols.replication.Controller.Builder clearOriginalEntity() {
+      originalEntity = null;
+      originalEntityBuilder = null;
       fieldSetFlags()[0] = false;
       return this;
     }
@@ -594,10 +594,10 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
     public Controller build() {
       try {
         Controller record = new Controller();
-        if (controllerEntityBuilder != null) {
-          record.controllerEntity = this.controllerEntityBuilder.build();
+        if (originalEntityBuilder != null) {
+          record.originalEntity = this.originalEntityBuilder.build();
         } else {
-          record.controllerEntity = fieldSetFlags()[0] ? this.controllerEntity : (protocols.replication.Entity) defaultValue(fields()[0]);
+          record.originalEntity = fieldSetFlags()[0] ? this.originalEntity : (protocols.replication.Entity) defaultValue(fields()[0]);
         }
         record.entities = fieldSetFlags()[1] ? this.entities : (java.util.List<protocols.replication.Entity>) defaultValue(fields()[1]);
         record.temperatureHistories = fieldSetFlags()[2] ? this.temperatureHistories : (java.util.List<protocols.replication.TemperatureHistory>) defaultValue(fields()[2]);

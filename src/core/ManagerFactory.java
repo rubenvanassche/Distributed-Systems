@@ -49,6 +49,14 @@ public class ManagerFactory {
 	
 	public ControllerManager createControllerManager(int amountOfMeasurements){
 		Controller device = devicefactory.createController(amountOfMeasurements);
+		// Create an original entity with information about the controller
+		Entity originalEntity = new Entity();
+		originalEntity.id = device.id;
+		originalEntity.ipAdress = device.ipAdress;
+		originalEntity.port = device.port;
+		originalEntity.type = device.type;
+		device.originalEntity = originalEntity;
+		
 		return this.createControllerManager(amountOfMeasurements, device);
 	}
 	

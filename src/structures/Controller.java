@@ -5,11 +5,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Map.Entry;
 import java.util.Vector;
 
 import protocols.controller.Failure;
 import protocols.controller.LightStatus;
+import structures.Sensor.UpdateTask;
 
 // Class representing the data of a controller
 public class Controller extends Device{	
@@ -31,8 +35,27 @@ public class Controller extends Device{
 	// Amount of measurements to keep
 	public int amountOfMeasurements;
 	
+	// The entity beloning to the original controller
+	public Entity originalEntity;
+	
+	// The time
+	public Double time = 0.0;
+	
 	public Controller(int fAmountOfMeasurements){
 		amountOfMeasurements = fAmountOfMeasurements;
+		
+		// Start the clock
+		UpdateClockTask updateClockTask = new UpdateClockTask();
+		
+		Timer timer = new Timer(true);
+		timer.scheduleAtFixedRate(updateClockTask, 0, 1*100);
+	}
+	
+	class UpdateClockTask extends TimerTask{		
+		@Override
+		public void run() {
+			time += 0.1;
+		}
 	}
 	
 	// Register information about the device(id, ip, port and type)
@@ -251,6 +274,9 @@ public class Controller extends Device{
 		System.out.println("Amount Of Measurements");
 		System.out.println("----------------------");
 		System.out.println(this.amountOfMeasurements);
+		System.out.println("Clock");
+		System.out.println("-----");
+		System.out.println(this.time);
 	}
 	
 	// Clear the whole controller
@@ -267,6 +293,8 @@ public class Controller extends Device{
 		this.openFridges.clear();
 		
 		this.amountOfMeasurements = 0;
+		
+		this.time = 0.0;
 	}
 	
 }

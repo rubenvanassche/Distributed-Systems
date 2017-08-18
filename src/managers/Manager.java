@@ -21,6 +21,18 @@ public class Manager implements Runnable {
         this.thread.quit();
     }
 	
+	public void rebootCLI(){
+		this.thread.quit();
+		this.thread = new GUI(this);
+		this.thread.start();
+		
+		this.server.start();
+		
+		try{
+			this.server.join();
+		}catch(InterruptedException e){}
+	}
+	
 	@Override
 	public void run() {
 		thread = new GUI(this);
