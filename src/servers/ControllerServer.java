@@ -1,6 +1,7 @@
 package servers;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.avro.AvroRemoteException;
 
@@ -200,8 +201,11 @@ public class ControllerServer extends Server implements protocols.controller.Con
 
 	@Override
 	public Void restart(List<LightStatus> lightStatusses, List<FridgeStatus> openFridges,
-			List<protocols.controller.TemperatureHistory> temperatureHistories, int amountOfMeasurements)
+			List<protocols.controller.TemperatureHistory> temperatureHistories, int amountOfMeasurements, double time)
 			throws AvroRemoteException, Failure {
+		// Set the time
+		this.controller.time = time;
+		
 		// Set light Statusses back
 		this.controller.lightStatus = lightStatusses;
 		

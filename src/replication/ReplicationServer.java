@@ -27,6 +27,9 @@ public class ReplicationServer implements protocols.replication.Replication {
 		// Clear the controller structure, so that info about previous devices is gone!
 		this.structure.clear();
 		
+		// Set the time
+		this.structure.time = controller.getTime();
+		
 		// Set amount of measurements
 		this.structure.amountOfMeasurements = controller.getAmountOfMeasurements();
 		

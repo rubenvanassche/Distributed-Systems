@@ -102,6 +102,9 @@ public class ReplicationConversion {
 		protocols.replication.Entity entity = this.convert(e);
 		controller.setOriginalEntity(entity);
 		
+		// Time
+		controller.setTime(c.time);
+		
 		return controller;
 	}
 }

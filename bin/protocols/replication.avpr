@@ -27,7 +27,8 @@
 			{"name": "temperatureHistories", "type": {"type" : "array", "items" : "TemperatureHistory"}},
 			{"name": "lightStatusses", "type": {"type" : "array", "items" : "LightStatus"}},
 			{"name": "openFridges", "type": {"type" : "array", "items" : "FridgeStatus"}},
-			{"name": "amountOfMeasurements", "type": "int"}
+			{"name": "amountOfMeasurements", "type": "int"},
+			{"name": "time", "type": "double"}
 		]},
 		{"name": "Failure", "type": "error", "doc" : "Failure", "fields": [
 			{"name": "info", "type": "string"}

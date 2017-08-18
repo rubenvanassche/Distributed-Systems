@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 /** Initial structure to be send for replication */
 @org.apache.avro.specific.AvroGenerated
 public class Controller extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -7442884602244703462L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Controller\",\"namespace\":\"protocols.replication\",\"doc\":\"Initial structure to be send for replication\",\"fields\":[{\"name\":\"originalEntity\",\"type\":{\"type\":\"record\",\"name\":\"Entity\",\"doc\":\"Device info for the network\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"},{\"name\":\"type\",\"type\":\"string\"}]}},{\"name\":\"entities\",\"type\":{\"type\":\"array\",\"items\":\"Entity\"}},{\"name\":\"temperatureHistories\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"TemperatureHistory\",\"doc\":\"Temperature measured by a sensor\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"temperatures\",\"type\":{\"type\":\"array\",\"items\":\"double\"}}]}}},{\"name\":\"lightStatusses\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"LightStatus\",\"doc\":\"Status of all the lights\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"state\",\"type\":\"boolean\"}]}}},{\"name\":\"openFridges\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"FridgeStatus\",\"doc\":\"Information about the fridges opened\",\"fields\":[{\"name\":\"fridgeId\",\"type\":\"int\"},{\"name\":\"userId\",\"type\":\"int\"},{\"name\":\"open\",\"type\":\"boolean\"}]}}},{\"name\":\"amountOfMeasurements\",\"type\":\"int\"}]}");
+  private static final long serialVersionUID = -4285248049902903190L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Controller\",\"namespace\":\"protocols.replication\",\"doc\":\"Initial structure to be send for replication\",\"fields\":[{\"name\":\"originalEntity\",\"type\":{\"type\":\"record\",\"name\":\"Entity\",\"doc\":\"Device info for the network\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"ipadress\",\"type\":\"string\"},{\"name\":\"port\",\"type\":\"int\"},{\"name\":\"type\",\"type\":\"string\"}]}},{\"name\":\"entities\",\"type\":{\"type\":\"array\",\"items\":\"Entity\"}},{\"name\":\"temperatureHistories\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"TemperatureHistory\",\"doc\":\"Temperature measured by a sensor\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"temperatures\",\"type\":{\"type\":\"array\",\"items\":\"double\"}}]}}},{\"name\":\"lightStatusses\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"LightStatus\",\"doc\":\"Status of all the lights\",\"fields\":[{\"name\":\"id\",\"type\":\"int\"},{\"name\":\"state\",\"type\":\"boolean\"}]}}},{\"name\":\"openFridges\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"FridgeStatus\",\"doc\":\"Information about the fridges opened\",\"fields\":[{\"name\":\"fridgeId\",\"type\":\"int\"},{\"name\":\"userId\",\"type\":\"int\"},{\"name\":\"open\",\"type\":\"boolean\"}]}}},{\"name\":\"amountOfMeasurements\",\"type\":\"int\"},{\"name\":\"time\",\"type\":\"double\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -58,6 +58,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
   @Deprecated public java.util.List<protocols.replication.LightStatus> lightStatusses;
   @Deprecated public java.util.List<protocols.replication.FridgeStatus> openFridges;
   @Deprecated public int amountOfMeasurements;
+  @Deprecated public double time;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -74,14 +75,16 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
    * @param lightStatusses The new value for lightStatusses
    * @param openFridges The new value for openFridges
    * @param amountOfMeasurements The new value for amountOfMeasurements
+   * @param time The new value for time
    */
-  public Controller(protocols.replication.Entity originalEntity, java.util.List<protocols.replication.Entity> entities, java.util.List<protocols.replication.TemperatureHistory> temperatureHistories, java.util.List<protocols.replication.LightStatus> lightStatusses, java.util.List<protocols.replication.FridgeStatus> openFridges, java.lang.Integer amountOfMeasurements) {
+  public Controller(protocols.replication.Entity originalEntity, java.util.List<protocols.replication.Entity> entities, java.util.List<protocols.replication.TemperatureHistory> temperatureHistories, java.util.List<protocols.replication.LightStatus> lightStatusses, java.util.List<protocols.replication.FridgeStatus> openFridges, java.lang.Integer amountOfMeasurements, java.lang.Double time) {
     this.originalEntity = originalEntity;
     this.entities = entities;
     this.temperatureHistories = temperatureHistories;
     this.lightStatusses = lightStatusses;
     this.openFridges = openFridges;
     this.amountOfMeasurements = amountOfMeasurements;
+    this.time = time;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -94,6 +97,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
     case 3: return lightStatusses;
     case 4: return openFridges;
     case 5: return amountOfMeasurements;
+    case 6: return time;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -108,6 +112,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
     case 3: lightStatusses = (java.util.List<protocols.replication.LightStatus>)value$; break;
     case 4: openFridges = (java.util.List<protocols.replication.FridgeStatus>)value$; break;
     case 5: amountOfMeasurements = (java.lang.Integer)value$; break;
+    case 6: time = (java.lang.Double)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -209,6 +214,22 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
   }
 
   /**
+   * Gets the value of the 'time' field.
+   * @return The value of the 'time' field.
+   */
+  public java.lang.Double getTime() {
+    return time;
+  }
+
+  /**
+   * Sets the value of the 'time' field.
+   * @param value the value to set.
+   */
+  public void setTime(java.lang.Double value) {
+    this.time = value;
+  }
+
+  /**
    * Creates a new Controller RecordBuilder.
    * @return A new Controller RecordBuilder
    */
@@ -247,6 +268,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
     private java.util.List<protocols.replication.LightStatus> lightStatusses;
     private java.util.List<protocols.replication.FridgeStatus> openFridges;
     private int amountOfMeasurements;
+    private double time;
 
     /** Creates a new Builder */
     private Builder() {
@@ -286,6 +308,10 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
         this.amountOfMeasurements = data().deepCopy(fields()[5].schema(), other.amountOfMeasurements);
         fieldSetFlags()[5] = true;
       }
+      if (isValidValue(fields()[6], other.time)) {
+        this.time = data().deepCopy(fields()[6].schema(), other.time);
+        fieldSetFlags()[6] = true;
+      }
     }
 
     /**
@@ -318,6 +344,10 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
       if (isValidValue(fields()[5], other.amountOfMeasurements)) {
         this.amountOfMeasurements = data().deepCopy(fields()[5].schema(), other.amountOfMeasurements);
         fieldSetFlags()[5] = true;
+      }
+      if (isValidValue(fields()[6], other.time)) {
+        this.time = data().deepCopy(fields()[6].schema(), other.time);
+        fieldSetFlags()[6] = true;
       }
     }
 
@@ -589,6 +619,44 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
       return this;
     }
 
+    /**
+      * Gets the value of the 'time' field.
+      * @return The value.
+      */
+    public java.lang.Double getTime() {
+      return time;
+    }
+
+    /**
+      * Sets the value of the 'time' field.
+      * @param value The value of 'time'.
+      * @return This builder.
+      */
+    public protocols.replication.Controller.Builder setTime(double value) {
+      validate(fields()[6], value);
+      this.time = value;
+      fieldSetFlags()[6] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'time' field has been set.
+      * @return True if the 'time' field has been set, false otherwise.
+      */
+    public boolean hasTime() {
+      return fieldSetFlags()[6];
+    }
+
+
+    /**
+      * Clears the value of the 'time' field.
+      * @return This builder.
+      */
+    public protocols.replication.Controller.Builder clearTime() {
+      fieldSetFlags()[6] = false;
+      return this;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Controller build() {
@@ -604,6 +672,7 @@ public class Controller extends org.apache.avro.specific.SpecificRecordBase impl
         record.lightStatusses = fieldSetFlags()[3] ? this.lightStatusses : (java.util.List<protocols.replication.LightStatus>) defaultValue(fields()[3]);
         record.openFridges = fieldSetFlags()[4] ? this.openFridges : (java.util.List<protocols.replication.FridgeStatus>) defaultValue(fields()[4]);
         record.amountOfMeasurements = fieldSetFlags()[5] ? this.amountOfMeasurements : (java.lang.Integer) defaultValue(fields()[5]);
+        record.time = fieldSetFlags()[6] ? this.time : (java.lang.Double) defaultValue(fields()[6]);
         return record;
       } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

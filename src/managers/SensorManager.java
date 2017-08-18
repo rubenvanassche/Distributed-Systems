@@ -26,6 +26,28 @@ public class SensorManager extends ControlledManager {
 		startUpdating();
 	}
 	
+	// Recalibrates the clocks
+	class CalibrateClockTask extends TimerTask{
+
+		@Override
+		public void run() {
+			try {
+				Double oldTime = sensor.time;
+				Double syncedTime = controller.getTime();
+				Double newTime = sensor.time;
+				
+				Double delay = (newTime - oldTime)/2.0;
+				sensor.time = syncedTime + delay;
+				Double calibratedTime = sensor.time;
+				
+				System.out.println("[INFO] Synced time, old: " + oldTime + ", request: " + syncedTime + ", new: " + calibratedTime);
+			} catch (AvroRemoteException e) {
+				// Somehting went wrong, let's ignore it!
+			}
+		}
+		
+	}
+	
 	class SendTemperatureTask extends TimerTask{
 		@Override
 		public void run() {
@@ -47,12 +69,15 @@ public class SensorManager extends ControlledManager {
 		}
 	}
 	
-	// Starts updating the clock and temperature
+	// Starts updating the clock and temperature + calibrating the clock
 	public void startUpdating(){
 		SendTemperatureTask sendTemperatureTask = new SendTemperatureTask();
+		CalibrateClockTask calibrateClockTask = new CalibrateClockTask();
+		
 		
 		Timer timer = new Timer(true);
 		timer.scheduleAtFixedRate(sendTemperatureTask, 0, 1*10);
+		timer.scheduleAtFixedRate(calibrateClockTask, 0, 10*1000);
 	}
 
 

@@ -138,7 +138,8 @@
 				{"name": "lightStatusses", "type": {"type" : "array", "items" : "LightStatus"}},
 				{"name": "openFridges", "type": {"type" : "array", "items" : "FridgeStatus"}},
 				{"name": "temperatureHistories", "type": {"type" : "array", "items" : "TemperatureHistory"}},
-				{"name": "amountOfMeasurements", "type" : "int"}
+				{"name": "amountOfMeasurements", "type" : "int"},
+				{"name": "time", "type" : "double"}
 			],
 			"doc" : "Information to restart the controller",
 			"response" : "null",

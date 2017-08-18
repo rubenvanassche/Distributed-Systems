@@ -198,6 +198,10 @@ public class ReplicatedManager extends ControlledManager {
 		}catch(AvroRemoteException e){
 			System.out.println("Couldn't reconnect with original controller.");
 		}
+		
+		// Reconnect the controller RPC to the controller
+		this.controller = this.originalController;
+		
 				
 		// Restart Cli
 		this.rebootCLI();
@@ -293,7 +297,8 @@ public class ReplicatedManager extends ControlledManager {
 		try {
 			this.originalController.restart(this.backupControllerStructure.lightStatus,
 					fridgeStatusses, temperatureHistories,
-					this.backupControllerStructure.amountOfMeasurements);
+					this.backupControllerStructure.amountOfMeasurements,
+					this.backupControllerStructure.time);
 		} catch (AvroRemoteException e) {
 			// TODO Auto-generated catch block
 			System.out.println("[ERROR] Couldn't send initial controller info to original controller");
