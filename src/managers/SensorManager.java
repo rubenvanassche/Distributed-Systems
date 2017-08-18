@@ -52,8 +52,7 @@ public class SensorManager extends ControlledManager {
 		} catch (Failure e){
 			System.err.println(e.getMessage());
 		} catch (AvroRemoteException e) {
-			// TODO Change controller
-			e.printStackTrace();
+			System.err.println("[ERROR] Couldn't find a controller");
 		}
 	}
 

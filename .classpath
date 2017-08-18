@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/avro-1.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/avro-ipc-1.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/netty-3.10.6.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

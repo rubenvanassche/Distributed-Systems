@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.avro.AvroRemoteException;
 
+import managers.ReplicatedManager;
 import protocols.replication.Controller;
 import protocols.replication.Entity;
 import protocols.replication.Failure;
@@ -13,10 +14,12 @@ import protocols.replication.TemperatureHistory;
 
 public class ReplicationServer implements protocols.replication.Replication {
 	structures.Controller structure;
+	ReplicatedManager manager = null;
 	
 	// generate a server with a backup controller structure
-	public ReplicationServer(structures.Controller controller){
+	public ReplicationServer(structures.Controller controller, ReplicatedManager m){
 		this.structure = controller;
+		this.manager = m;
 	}
 
 	@Override
@@ -103,6 +106,18 @@ public class ReplicationServer implements protocols.replication.Replication {
 		
 		this.structure.openFridges.put(data.getFridgeId(), fs);
 		
+		return null;
+	}
+
+	@Override
+	public Void election(int entityId, int score) throws AvroRemoteException {
+		this.manager.electionProcessor.processElection(entityId, score);
+		return null;
+	}
+
+	@Override
+	public Void elected(int entityId) throws AvroRemoteException {
+		this.manager.electionProcessor.processElected(entityId);
 		return null;
 	}
 

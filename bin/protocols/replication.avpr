@@ -63,6 +63,17 @@
 			"response" : "null",
 			"doc" : "Each time a fridge gets updated, this method will be called",
 			"errors": ["Failure"]
+		},
+		"election" : {
+			"request" : [
+				{"name": "entityId", "type": "int"},
+				{"name": "score", "type": "int"}
+				],
+			"response" : "null"
+		},
+		"elected" : {
+			"request" : [{"name": "entityId", "type": "int"}],
+			"response" : "null"
 		}
 	}
 }

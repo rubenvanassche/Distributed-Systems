@@ -18,6 +18,7 @@ import avro.hello.proto.Hello;
 import core.DeviceFactory;
 import core.GUI;
 import core.ManagerFactory;
+import election.ElectionProcessor;
 import protocols.fridge.Fridge;
 import protocols.light.Light;
 import protocols.sensor.Sensor;
@@ -28,20 +29,25 @@ import structures.Device;
 import structures.Entity;
 
 public class ReplicatedManager extends ControlledManager {
-	Controller backupController;
+	public Controller backupControllerStructure;
 	ControllerManager backupControllerManager = null;
 	Boolean isBackup = false;
 	Server replicationServer = null;
+	public ElectionProcessor electionProcessor = null;
 	
-	class ReplicationServerTask implements Runnable{
-
-		@Override
+	class ReplicationServerTask extends Thread{
+		ReplicatedManager manager = null;
+		
+		public ReplicationServerTask(ReplicatedManager m) {
+			this.manager = m;
+		}
+			
 		public void run() {
 			// Build a replication server
 			try{
 				InetAddress ipAddress = InetAddress.getByName(structure.ipAdress);
 				InetSocketAddress socketAddress = new InetSocketAddress(ipAddress, structure.port + 1);
-				replicationServer = new SaslSocketServer(new SpecificResponder(protocols.replication.Replication.class, new ReplicationServer(backupController)), socketAddress);
+				replicationServer = new SaslSocketServer(new SpecificResponder(protocols.replication.Replication.class, new ReplicationServer(backupControllerStructure, manager)), socketAddress);
 			}catch(IOException e){
 				System.err.println("[Error] Failed to start replication server");
 			}
@@ -55,25 +61,34 @@ public class ReplicatedManager extends ControlledManager {
 		}
 		
 	}
+	
+	@Command()
+	public void StartElection(){
+		this.electionProcessor.start();
+	}
 
 	public ReplicatedManager(Device fstructure, Server server) {
 		super(fstructure, server);
 		
-		// Create a new controller server for backup purpose
+		// Create a new controller server for backup purpose, dont start it yet
 		// Use the same device info as this device, because the original device server will be stopped
 		DeviceFactory df = new DeviceFactory(this.structure.id, this.structure.controllerIpAdress, this.structure.controllerPort, this.structure.ipAdress, this.structure.port);
-		backupController = df.createController(0);
+		backupControllerStructure = df.createController(0);
 		
 		// Start a replication server
-		Thread t =  new Thread(new ReplicationServerTask());
+		Thread t =  new ReplicationServerTask(this);
 		t.start();
 		
+		// Register this device to the controller
 		this.registerToController();
+		
+		// Create an election processor for when things go wrong
+		this.electionProcessor = new ElectionProcessor(this);
 	}
 	
 	@Command(description="Get information about the replication of data")
 	public void replicationInfo(){
-		this.backupController.replicationInfo();
+		this.backupControllerStructure.replicationInfo();
 	}
 	
 	// Give permission to this backup controller to start
@@ -84,16 +99,16 @@ public class ReplicatedManager extends ControlledManager {
 		
 		// Create the new backup controller server
 		ManagerFactory mf = new ManagerFactory(null); // we dont use this feature
-		this.backupControllerManager = mf.createControllerManager(0, this.backupController);
+		this.backupControllerManager = mf.createControllerManager(0, this.backupControllerStructure);
 		Thread t = new Thread(this.backupControllerManager);
 		t.start();
 		
 		// Stop the replication sever
-		this.replicationServer.close();
+		//this.replicationServer.close();
 		
         
         // Reregister all devices
-        for(Entry<Integer, Entity> entry : this.backupController.fridges.entrySet()){
+        for(Entry<Integer, Entity> entry : this.backupControllerStructure.fridges.entrySet()){
         	// Check if the original type of this device is a fridge, if it has the same id, don't try to reconnect
         	if(this.structure.type.toString().equals("FRIDGE") && this.structure.id == entry.getKey()){
         		continue;
@@ -102,15 +117,15 @@ public class ReplicatedManager extends ControlledManager {
         	this.callReRegister(entry.getValue());
         }
         
-        for(Entry<Integer, Entity> entry : this.backupController.lights.entrySet()){        	
+        for(Entry<Integer, Entity> entry : this.backupControllerStructure.lights.entrySet()){        	
         	this.callReRegister(entry.getValue());
         }
         
-        for(Entry<Integer, Entity> entry : this.backupController.sensors.entrySet()){
+        for(Entry<Integer, Entity> entry : this.backupControllerStructure.sensors.entrySet()){
         	this.callReRegister(entry.getValue());
         }
         
-        for(Entry<Integer, Entity> entry : this.backupController.users.entrySet()){
+        for(Entry<Integer, Entity> entry : this.backupControllerStructure.users.entrySet()){
         	// Check if the original type of this device is a user, if it has the same id, don't try to reconnect
         	if(this.structure.type.toString().equals("USER") && this.structure.id == entry.getKey()){
         		continue;
@@ -119,6 +134,9 @@ public class ReplicatedManager extends ControlledManager {
         	this.callReRegister(entry.getValue());
         }
         
+        this.isBackup = true;
+        
+        System.out.println("[INFO] Started a backup controller");
 	}
 	
 	// Calls the reregister method on controlled Devices
@@ -130,16 +148,16 @@ public class ReplicatedManager extends ControlledManager {
 			
 			if(entity.type.toString().equals("FRIDGE")){
 				Fridge proxy = (Fridge) SpecificRequestor.getClient(Fridge.class, client);
-				proxy.reRegister(backupController.ipAdress, backupController.port);
+				proxy.reRegister(backupControllerStructure.ipAdress, backupControllerStructure.port);
 			}else if(entity.type.toString().equals("LIGHT")){
 				Light proxy = (Light) SpecificRequestor.getClient(Light.class, client);
-				proxy.reRegister(backupController.ipAdress, backupController.port);
+				proxy.reRegister(backupControllerStructure.ipAdress, backupControllerStructure.port);
 			}else if(entity.type.toString().equals("SENSOR")){
 				Sensor proxy = (Sensor) SpecificRequestor.getClient(Sensor.class, client);
-				proxy.reRegister(backupController.ipAdress, backupController.port);
+				proxy.reRegister(backupControllerStructure.ipAdress, backupControllerStructure.port);
 			}else if(entity.type.toString().equals("USER")){
 				User proxy = (User) SpecificRequestor.getClient(User.class, client);
-				proxy.reRegister(backupController.ipAdress, backupController.port);
+				proxy.reRegister(backupControllerStructure.ipAdress, backupControllerStructure.port);
 			}else{
 				client.close();
 				throw new Exception("[ERROR] Trying to reregister unkown type.");
