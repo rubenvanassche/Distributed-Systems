@@ -87,7 +87,7 @@ public class SensorManager extends ControlledManager {
 	}
 	
 	@Command(description="get the current time")
-	public void getTime(){
+	public void getClock(){
 		System.out.println(this.sensor.time);
 	}
 }
