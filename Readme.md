@@ -1,7 +1,7 @@
 # Gedistribueerde Systemen
 
 ## Runnen
-Er zijn 2 manieren om het project te runnen: gebruik maken van de al reeds gecompileerde app.jar of het project openen in eclipse en Core/CLI.java runnen. Voor alle devices in het domotica netwerk wordt gebruik gemaakt van eenzelfde executable. Hieronder staan de verschillende mogelijkheden om devices aan te maken. Een belangrijke opmerking: voor het runnen van replication devices(Fridges en Users) zijn steeds twee opeenvolgende pporten nodig! Dit wil zeggen dat als een Fridge wordt gecreerd op poort 1000, alsook poort 1001 beschikbaar moet zijn!
+Er zijn 2 manieren om het project te runnen: gebruik maken van de al reeds gecompileerde app.jar of het project openen in eclipse en Core/CLI.java runnen(in de map lauchers zijn standaard run configurations opgeslagen). Voor alle devices in het domotica netwerk wordt gebruik gemaakt van eenzelfde executable. Hieronder staan de verschillende mogelijkheden om devices aan te maken. Een belangrijke opmerking: voor het runnen van replication devices(Fridges en Users) zijn steeds twee opeenvolgende pporten nodig! Dit wil zeggen dat als een Fridge wordt gecreerd op poort 1000, alsook poort 1001 beschikbaar moet zijn!
 
 ### Controller
 ```
