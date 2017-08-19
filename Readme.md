@@ -56,7 +56,7 @@ java -jar app.jar -type user -id 1 -ip 192.168.1.1 -port 1000 -cip 192.168.1.1 -
 ```
 
 ## Gebruik
-Elk device bevat een cliche command shell, deze is interactief en d.m.v.
+Elk device bevat een cliche command shell, deze is interactief en d.m.v. het commando ?l kan men alle commandos bekomen voor een bepaalde shell. Meer informatie over een commando kan opgevraagd worden d.m.v. ?h [COMMANDONAAM].
 
 ## Design
 Alle vereisten uit de opgave zijn geimplementeerd! Hieronder een woordje uitleg bij belangrijke facetten van het netwerk.
